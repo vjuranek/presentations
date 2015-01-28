@@ -1,0 +1,155 @@
+\documentclass[10pt,utf8]{beamer}
+
+\mode<presentation> {
+%  \usetheme{Boadilla}
+  \usetheme{Madrid}
+%	\usetheme{Fzu}
+  \setbeamercovered{transparent}
+}
+
+\usepackage{palatino}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{colortbl}
+\usepackage{amsmath}
+\usepackage{hyperref}
+%\usepackage{tikz}
+%\usetikzlibrary{arrows,shapes,backgrounds}
+
+
+%\definecolor{MyDarkGreen}{rgb}{0.3,0.7,0.3}
+
+\title{CHANGE ME: prezentation title}
+\author{Vojtěch Juránek}
+\institute[Red Hat]{JBoss - a division by Red Hat}
+\date{CHANGE ME: date, CHANGE ME: conference name, CHANGE ME: place}
+
+\newenvironment{mylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\scriptsize\bfseries}
+{\end{list}}
+
+\newenvironment{mytinylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\tiny\bfseries}
+{\end{list}}
+
+
+\begin{document}
+
+%\tikzstyle{every picture}+=[remember picture]
+%\tikzstyle{na} = [baseline=-.5ex]
+
+
+\begin{frame}
+ \titlepage
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \begin{itemize}
+    \item ???
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{???}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%% SOME EXAMPLES %%%%%%%%%%%%%%%%%%%%%%
+
+% \begin{frame}[fragile] %needs to be here to use verbatim
+%  \textit{???} \\
+%  \vspace{0.3cm}
+%  \pause
+%  \begin{scriptsize}\url{https://???}\end{scriptsize}
+%  \scriptsize{
+%    \begin{verbatim}
+% wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+% rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key
+% yum -y install jenkins
+% service jenkins start
+%    \end{verbatim}
+%  }
+%   \begin{columns}
+%   \column{0.65\textwidth}
+%   \begin{itemize}
+%   \item PHP:
+% 		\begin{itemize}
+% 			\item Check \url{http://jenkins-php.org/} or book \texttt{PHP projects with Jenkins} by O'Reilly
+% 		\end{itemize}
+%   \pause
+%   \item Far not a complete list, list above is just my personal selection of some interesting plugins! Also plugins for other languages exists.
+%   
+%  \end{itemize}
+%  \column{0.33\textwidth}
+% 	\begin{figure}
+% 		\centering
+% 		\includegraphics[width=3cm]{./img/php_book.eps}
+% 	\end{figure}
+%   \end{columns}
+% \end{frame}
+% 
+
+
+
+% \begin{frame}
+% 	\frametitle{Releases, packages}
+% 	\begin{columns}
+% 		\vspace{-5cm}
+% 		\column{0.59\textwidth}
+% 		\url{http://jenkins-ci.org}\\
+% 		\vspace{1cm}
+% 		Release cycle:
+% 		\begin{itemize}
+% 		 \item Released usually weekly \tikz[na] \coordinate (s_weekly); - release early, release often.
+% 		 \item Long term support (LTS) release \tikz[na] \coordinate (s_LTS); - every 3 months, every month minor release with backports of major bug fixes.
+% 		\end{itemize}
+% 		\vspace{1cm}
+% 		
+% 		Distribution (Jenkins is a Java servlet):
+% 		\begin{itemize}
+% 		 \item Web archive (WAR). \tikz[na] \coordinate (s_war);
+% 		 \item Native package. \tikz[na] \coordinate (s_native);
+% 		\end{itemize}
+% 		\vspace{4cm}
+% 
+% 	
+% 		\column{0.4\textwidth}
+% 		\vspace{0.5cm}
+% 		%\tikzstyle{background grid}=[draw, black!50,step=.5cm]
+% 		\begin{tikzpicture}%[show background grid]
+%             % Put the graphic inside a node. This makes it easy to place the
+%             % graphic and to draw on top of it. 
+%             % The above right option is used to place the lower left corner
+%             % of the image at the (0,0) coordinate. 
+%             \node [inner sep=0pt,above right] 
+%                 {\includegraphics[width=8cm]{./img/jenkins_download.eps}};
+%             % show origin
+%             %\fill (0,0) circle (2pt);
+%             % define destination coordinates
+%             \path (0.8,10.5) coordinate (weekly)
+%                   (2,10.5) coordinate (LTS)
+%                   (1.5,10) coordinate (war)
+%                   (0.5,7) coordinate (native);
+%         \end{tikzpicture}
+% 	\end{columns}
+% % define overlays
+% % Note the use of the overlay option. This is required when 
+% % you want to access nodes in different pictures.
+% \begin{tikzpicture}[overlay]
+%         \path[->,red,thick] (s_weekly) edge [bend left] (weekly);
+%         \path[->,blue,thick] (s_LTS) edge [bend left] (LTS);
+%         %\path[->,red,thick] (s_war) edge [out=0, in=-90] (war);
+%         \path[->,red,thick] (s_war) edge [out=0, in=-90] (war);
+%         \path[->,blue,thick] (s_native) edge [out=0, in=-90] (native);
+% \end{tikzpicture}
+% 
+% \end{frame}
+
+
+
+\end{document}
