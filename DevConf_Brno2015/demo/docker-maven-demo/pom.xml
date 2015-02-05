@@ -23,11 +23,42 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>2.18.1</version>
+				<configuration>
+					<systemPropertyVariables>
+						<demo.ldap.ip>${docker.ispn-ldap.ipAddress}</demo.ldap.ip>
+					</systemPropertyVariables>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.alexecollins.docker</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<configuration>
+					<version>1.15</version>
+					<host>http://127.0.0.1:2375</host>
+					<username>vjuranek</username>
+				</configuration>
+				<executions>
+					<execution>
+						<id>start-conatiner</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>stop-conatiner</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
 						</goals>
 					</execution>
 				</executions>

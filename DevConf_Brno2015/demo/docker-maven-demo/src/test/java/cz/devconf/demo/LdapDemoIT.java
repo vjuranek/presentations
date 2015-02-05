@@ -12,11 +12,13 @@ import org.junit.Test;
 
 public class LdapDemoIT {
 
+    public static final String DOCKER_LDAP_IP_PROP = "demo.ldap.ip";
+    
     private static LdapDemo ldapDemo;
     
     @BeforeClass
     public static void setup() throws Exception {
-        ldapDemo = new LdapDemo("172.17.0.40");
+        ldapDemo = new LdapDemo(System.getProperty(DOCKER_LDAP_IP_PROP));
     }
     
     @AfterClass
