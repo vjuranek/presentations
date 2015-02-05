@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://jboss.org/schema/arquillian"
+	xsi:schemaLocation="http://jboss.org/schema/arquillian
+  http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+	<extension qualifier="docker">
+		<property name="serverVersion">1.15</property>
+		<property name="serverUri">http://localhost:2375</property>
+		<property name="dockerContainers">
+          ldap:
+            image: vjuranek/docker-maven-demo_ispn-ldap
+            exposedPorts: [389/tcp]
+            await:
+              strategy: polling
+              sleepPollingTime: 2 s
+              iterations: 5 
+            portBindings: [389/tcp]
+      </property>
+	</extension>
+	
+	<container qualifier="ldap" default="true">
+      <configuration/>
+  </container>
+</arquillian>

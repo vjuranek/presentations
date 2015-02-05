@@ -15,7 +15,50 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<version>1.1.6.Final</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.arquillian.cube</groupId>
+			<artifactId>arquillian-cube-containerless</artifactId>
+			<version>1.0.0.Alpha3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.arquillian.cube</groupId>
+			<artifactId>arquillian-cube-docker</artifactId>
+			<version>1.0.0.Alpha3</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>mvn</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<it.test.excelude>LdapDemoArqIT.java</it.test.excelude>
+				<docker.phase.start>pre-integration-test</docker.phase.start>
+				<docker.phase.stop>post-integration-test</docker.phase.stop>
+			</properties>
+		</profile>
+		<profile>
+			<id>arq</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<it.test.excelude>LdapDemoIT.java</it.test.excelude>
+				<docker.phase.start>none</docker.phase.start>
+				<docker.phase.stop>none</docker.phase.stop>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
@@ -24,6 +67,9 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>2.18.1</version>
 				<configuration>
+					<excludes>
+						<exclude>**/${it.test.excelude}</exclude>
+					</excludes>
 					<systemPropertyVariables>
 						<demo.ldap.ip>${docker.ispn-ldap.ipAddress}</demo.ldap.ip>
 					</systemPropertyVariables>
@@ -49,14 +95,14 @@
 				<executions>
 					<execution>
 						<id>start-conatiner</id>
-						<phase>pre-integration-test</phase>
+						<phase>${docker.phase.start}</phase>
 						<goals>
 							<goal>start</goal>
 						</goals>
 					</execution>
 					<execution>
 						<id>stop-conatiner</id>
-						<phase>post-integration-test</phase>
+						<phase>${docker.phase.stop}</phase>
 						<goals>
 							<goal>stop</goal>
 						</goals>
