@@ -1,0 +1,1 @@
+mvn exec:java -Dexec.mainClass="cz.devconf.demo.LdapDemo" -Dexec.args="172.17.0.40"
