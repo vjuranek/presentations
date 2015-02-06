@@ -58,6 +58,17 @@
 				<docker.phase.stop>none</docker.phase.stop>
 			</properties>
 		</profile>
+		<profile>
+			<id>jenkins</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<it.test.excelude>LdapDemoArqIT.java</it.test.excelude>
+				<docker.phase.start>none</docker.phase.start>
+				<docker.phase.stop>none</docker.phase.stop>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>
