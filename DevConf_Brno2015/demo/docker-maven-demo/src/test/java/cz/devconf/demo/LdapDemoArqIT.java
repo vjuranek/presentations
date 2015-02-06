@@ -22,6 +22,7 @@ public class LdapDemoArqIT {
     
     @BeforeClass
     public static void setup() throws Exception {
+         // I wasn't able to make it running with ARQ injected value (@ArquillianResource URL base), so it's hardcoded for now:-(
         ldapDemo = new LdapDemo(LDAP_IP);
     }
     
@@ -29,7 +30,7 @@ public class LdapDemoArqIT {
     public static void tearDown() throws Exception {
         ldapDemo.close();
     }
-
+    
     @Test
     @RunAsClient
     public void testLdapQuery() throws Exception {

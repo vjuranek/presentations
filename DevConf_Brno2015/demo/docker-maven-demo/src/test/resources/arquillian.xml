@@ -7,19 +7,25 @@
 	<extension qualifier="docker">
 		<property name="serverVersion">1.15</property>
 		<property name="serverUri">http://localhost:2375</property>
+		<property name="autoStartContainers">ldap</property>
 		<property name="dockerContainers">
           ldap:
+            #buildImage:
+            #  dockerfileLocation: src/main/docker/ispn-ldap
             image: vjuranek/docker-maven-demo_ispn-ldap
-            exposedPorts: [389/tcp]
+            #exposedPorts: [389/tcp]
             await:
               strategy: polling
               sleepPollingTime: 2 s
-              iterations: 5 
+              iterations: 10 
             portBindings: [389/tcp]
       </property>
 	</extension>
 	
-	<container qualifier="ldap" default="true">
-      <configuration/>
+	<container qualifier="containerless" default="true">
+      <configuration>
+        <property name="containerlessDocker">ldap</property>
+        <property name="embeddedPort">389</property>
+    </configuration>
   </container>
 </arquillian>
