@@ -15,22 +15,23 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class LdapDemoArqIT {
-    
+
     private static final String LDAP_IP = "127.0.0.1";
-    
+
     private static LdapDemo ldapDemo;
-    
+
     @BeforeClass
     public static void setup() throws Exception {
-         // I wasn't able to make it running with ARQ injected value (@ArquillianResource URL base), so it's hardcoded for now:-(
+        // I wasn't able to make it running with ARQ injected value (@ArquillianResource URL base), so it's hardcoded
+        // for now:-(
         ldapDemo = new LdapDemo(LDAP_IP);
     }
-    
+
     @AfterClass
     public static void tearDown() throws Exception {
         ldapDemo.close();
     }
-    
+
     @Test
     @RunAsClient
     public void testLdapQuery() throws Exception {

@@ -21,11 +21,11 @@
             portBindings: [389/tcp]
       </property>
 	</extension>
-	
+
 	<container qualifier="containerless" default="true">
-      <configuration>
-        <property name="containerlessDocker">ldap</property>
-        <property name="embeddedPort">389</property>
-    </configuration>
-  </container>
+		<configuration>
+			<property name="containerlessDocker">ldap</property>
+			<property name="embeddedPort">389</property>
+		</configuration>
+	</container>
 </arquillian>
