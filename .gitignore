@@ -112,3 +112,4 @@ sympy-plots-for-*.tex/
 # Editors
 *~       #emacs
 *.backup #kile
+*.tex.backup
