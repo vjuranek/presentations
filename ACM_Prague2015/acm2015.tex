@@ -57,12 +57,38 @@
 \end{frame}
 
 \begin{frame}
+	\frametitle{Data today}
+	\begin{itemize}
+		\item Huge amount of data
+		\begin{itemize}
+			\item You can scale up, but sooner or later you'll need to scale out
+			\item Need for highly scaleable solution also because of coste efectiveness
+		\end{itemize}
+		\item Lots of data is semi-structured or not structured at all (texts, log files, audio, video, click streams \dots)
+		\begin{itemize}
+			\item (spis kvuli performance) Needed ability to store unstructured data
+			\item But ability  to talk to RDBMS is often needed as well
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
 	\frametitle{Why caching}
 	\begin{figure}
 		\centering
 		\includegraphics[width=12cm]{./img/xkcd_908.eps}
 		\caption{\tiny{Source: Part of \href{http://xkcd.com/908/}{xkcd \#908}}}
 	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Why in-memory}
+	\begin{itemize}
+	 \item Lots of data is needed in real-time (BigData $\rightarrow$ FastData)
+	 \item Some tasks can be completed much faster when data are kept in memory
+	 \item Keep data in memory during processing of whole application stack, not only during processing in one application in the stack
+	 \item With data replication you can keep your data only in memory
+	\end{itemize}
 \end{frame}
 
 
@@ -77,11 +103,11 @@
 	\column{0.6\textwidth}
 		\begin{itemize}
 			\item Datagrid patform
-			\item In-Memory, Schema-less, NoSQL key-value data store
-			\item Distributed cache (offers massive heap)
+			\item In-Memory, (optional) Schema-less, NoSQL key-value data store
+			\item Distributed cache (offers massive memory)
 			\item Elastic and scalable (can run on hundreds of nodes)
-			\item Higly available, resilient to node failures
-			\item Concurrent (reads and writes at the same time)
+			\item Higly available (no SPOF), resilient to node failures
+			\item Concurrent (MVCC)
 			\item Transactional
 			\item Queryable
 			\item Processing for streaming data
@@ -92,8 +118,8 @@
 \begin{frame}
 	\frametitle{Infinispan}
 	\begin{itemize}
-		\item Open-source: \url{https://github.com/infinispan}
-		\item Member of
+		\item 100\% open-source: \url{https://github.com/infinispan}
+		\item Member of couple research projects (funded by the European Commission)
 % 		\begin{columns}
 % 		\column{0.5\textwidth}
 % 			\begin{itemize}
@@ -105,9 +131,7 @@
 				\centering
 				\includegraphics[width=3cm]{./img/leads.eps}
 			\end{figure}
-			\centering{a research project funded by the European Commission}
 			\vspace{0.5cm}
-		\item In the past member of
 			\begin{figure}
 				\centering
 				\includegraphics[width=3cm]{./img/cloudTM.eps}
@@ -118,48 +142,92 @@
 
 \begin{frame}
   \frametitle{Infinispan modes}
-  \begin{itemize}
-    \item Embedded (library, in-VM)
-		\item Client-server (remote)
-  \end{itemize}
+	\begin{columns}
+	\column{0.5\textwidth}
+		\begin{itemize}
+			\item Embedded (library, in-VM)
+		\end{itemize}
+		\begin{figure}
+			%\centering
+			\includegraphics[width=5cm]{./img/ispn-emb.eps}
+		\end{figure}
+	\column{0.5\textwidth}
+		\begin{itemize}
+			\item Client-server (remote)
+		\end{itemize}
+		\begin{figure}
+			%\centering
+			\includegraphics[width=5cm]{./img/ispn-cs.eps}
+		\end{figure}
+	\end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Clustering modes}
-  \begin{itemize}
-    \item Local
-		\item Replicated
-		\item Distributed
-		\item Invalidation
-  \end{itemize}
+	\frametitle{Clustering modes}
+	Under the hood leverages JGroups project for clustering.
+	\begin{columns}
+	\column{0.5\textwidth}
+		\begin{itemize}
+			\item Local - no clustering
+			\vspace{3cm}
+			\item Replicated
+			\begin{figure}
+				%\centering
+				\includegraphics[width=4cm]{./img/ispn-repl.eps}
+			\end{figure}
+		\end{itemize}
+	\column{0.5\textwidth}
+		\begin{itemize}
+			\item Distributed
+			\begin{figure}
+				%\centering
+				\includegraphics[width=4cm]{./img/ispn-dist.eps}
+			\end{figure}
+			\item Invalidation
+			\begin{figure}
+				%\centering
+				\includegraphics[width=4cm]{./img/ispn-inval.eps}
+			\end{figure}
+		\end{itemize}
+	\end{columns}
 \end{frame}
 
 
 \begin{frame}
 	\frametitle{Remote protocols}
-	\begin{itemize}
-		\item HotRod
-			\begin{itemize}
-			\item hashing and topology aware
-			\item failover during topology changes
-			\item smart request routing in partitioned or distributed server clusters
+	\begin{columns}
+	\column{0.5\textwidth}
+		\begin{itemize}
+			\item HotRod
+				\begin{itemize}
+					\item hashing and topology aware
+					\item failover during topology changes
+					\item smart request routing
+				\end{itemize}
+			\item Memcached
+			\item REST
 		\end{itemize}
-		\item Memcached
-		\item REST
-  \end{itemize}
+	\column{0.5\textwidth}
+		\begin{figure}
+			%\centering
+			\includegraphics[width=5cm]{./img/ispn-cs.eps}
+		\end{figure}
+	\end{columns}
 \end{frame}
 
 \begin{frame}
   \frametitle{Hotrod clients}
-	Compatible with Java and non-Java platforms. Based on Protocol Buffers - Google's data interchange format. Client for
-  \begin{itemize}
-    \item Java
+	Compatible with Java and non-Java platforms. Based on Protocol Buffers - Google's data interchange format.\\
+	\vspace{0.5cm}
+	Clients for
+	\begin{itemize}
+		\item Java
 		\item C\#
 		\item C++
 		\item Python
 		\item Ruby
-  \end{itemize}
-	Python and Ruby are not full feature clients.
+	\end{itemize}
+	Python and Ruby clients have only basic functionality.
 \end{frame}
 
 \begin{frame}
@@ -183,21 +251,6 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{Locking and data versioning}
-	\begin{itemize}
-	 \item Two isolation levels, READ\_COMMITED nad REPEATABLE\_READ
-	 \item Shared locks for whole cache or per entry locks
-	 \item Three types of data versioning
-	 \begin{itemize}
-	  \item Simple versioning
-		\item Partition-aware versioning (vector locks)
-		\item External versioning - used e.g. with Hibernate, where locks are provided by database
-	 \end{itemize}
-	\end{itemize}
-\end{frame}
-
-
-\begin{frame}
 	\frametitle{Transactions}
 	\begin{itemize}
 	 \item Support JTA-compliant transactions
@@ -205,19 +258,27 @@
 	 \item Optimistic and pessimistic locking available
 	 \item Read committed and repeated read isolation levels
 	 \item Deadlock detection and recovery
+	 \item Data versioning
+% 		\begin{itemize}
+% 			\item Simple versioning
+% 			\item Partition-aware versioning (vector locks)
+% 			\item External versioning - used e.g. with Hibernate, where locks are provided by database
+% 		\end{itemize}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Querying}
 	\begin{itemize}
+		\item needs some data schema (annotrations, protobuf, ...)
 	 \item Search for data using data attributes instead of keys
 	 \item Featured attributes include keyword, range, fuzzy, wildcard, and phrase queries.
-	 \item Combine queries
+	 \item Combine queries and aggregation functions (but doesn't support joins)
 	 \item Sort, filter, and paginate query results
+	 \item suppor for index or non-indexed queries
 	 \item Allows for indexing of entries as they are stored
 	 \item Indexing
-	 \item Lucene query API
+	 \item Lucene query API or fluent DSL API
 	\end{itemize}
 \end{frame}
 
@@ -237,14 +298,15 @@
 \begin{frame}
   \frametitle{Some other features - brief and selective list}
   \begin{itemize}
-		\item Map-reduce framework and distributed executors
+		\item Data eviction
 		\item Full JSR-107 support (Java Temporary Caching API)
 		\item CDI support
 		\item Remote events
 		\item Client near cache
 		\item Rolling upgrades
-		\item Cross data center replication
+		\item Cross data center replication (separate slide??? With HR failover ability)
 		\item Command line interface
+		\item Map-reduce framework and distributed executors
   \end{itemize}
 \end{frame}
 
@@ -269,7 +331,7 @@
 		\begin{itemize}
 			\item 2-nd level cache
 		\end{itemize}
-		\item Lucene
+		\item Lucene directory
 		\begin{itemize}
 		 \item In-memory Lucene index 
 		\end{itemize}
@@ -288,6 +350,12 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+	\centering
+	\huge{\textbf{Demo}} \\
+	\vspace{1cm}
+	\huge{\textbf{Integration with Apache Spark}}
+\end{frame}
 
 \begin{frame}
 	\frametitle{Some projects using Infinispan}
