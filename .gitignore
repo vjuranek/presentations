@@ -110,6 +110,11 @@ sympy-plots-for-*.tex/
 
 
 # Editors
-*~       #emacs
-*.backup #kile
+# emacs
+*~
+# kile
+*.backup 
 *.tex.backup
+# idea
+.idea/
+*.iml
