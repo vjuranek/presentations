@@ -66,9 +66,10 @@
 		\end{itemize}
 		\item Lots of data is semi-structured or not structured at all (texts, log files, audio, video, click streams \dots)
 		\begin{itemize}
-			\item Needed ability to store unstructured data (very often for performance reasons)
+			\item Needed ability to store unstructured data (often for performance reasons)
 			\item But ability  to talk to RDBMS is often needed as well
 		\end{itemize}
+		\item Cloud achitecture - everything is ephemeral
 	\end{itemize}
 \end{frame}
 
@@ -118,8 +119,12 @@
 \begin{frame}
 	\frametitle{Infinispan}
 	\begin{itemize}
-		\item 100\% open-source: \url{https://github.com/infinispan}
-		\item Member of couple research projects (funded by the European Commission)
+		\item 100\% open-source
+		\begin{itemize}
+			\item \url{https://github.com/infinispan}
+			\item Apache License, v2.0
+		\end{itemize}
+		\item Member of couple research projects (funded by the EU)
 			\begin{figure}
 				\centering
 				\includegraphics[width=3cm]{./img/leads.eps}
@@ -191,7 +196,7 @@
 	\begin{columns}
 	\column{0.5\textwidth}
 		\begin{itemize}
-			\item HotRod
+			\item Hot Rod
 				\begin{itemize}
 					\item hashing and topology aware
 					\item failover during topology changes
@@ -209,7 +214,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Hotrod clients}
+  \frametitle{Hot Rod clients}
 	Compatible with Java and non-Java platforms. Based on Protocol Buffers - Google's data interchange format.\\
 	\vspace{0.5cm}
 	Clients for
@@ -297,7 +302,7 @@
 		\item Remote events
 		\item Client near cache
 		\item Rolling upgrades
-		\item Cross data center replication (also HotRod clients support failover to another data center)
+		\item Cross data center replication (also Hot Rod clients support failover to another data center)
 		\item Command line interface
 		\item Map-reduce framework and distributed executors
   \end{itemize}
@@ -409,6 +414,8 @@
 
 \begin{frame}
 	\centering
+	\huge{\color{blue}{\url{http://infinispan.org/}}} \\
+	\vspace{1cm}
 	\huge{\textbf{Thank you for your attention!}} \\
 	\vspace{1cm}
 	\huge{\textbf{Questions?}}
