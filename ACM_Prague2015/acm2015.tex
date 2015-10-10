@@ -62,11 +62,11 @@
 		\item Huge amount of data
 		\begin{itemize}
 			\item You can scale up, but sooner or later you'll need to scale out
-			\item Need for highly scaleable solution also because of coste efectiveness
+			\item Need for highly scaleable solution also because of cost effectiveness
 		\end{itemize}
 		\item Lots of data is semi-structured or not structured at all (texts, log files, audio, video, click streams \dots)
 		\begin{itemize}
-			\item (spis kvuli performance) Needed ability to store unstructured data
+			\item Needed ability to store unstructured data (very often for performance reasons)
 			\item But ability  to talk to RDBMS is often needed as well
 		\end{itemize}
 	\end{itemize}
@@ -86,8 +86,8 @@
 	\begin{itemize}
 	 \item Lots of data is needed in real-time (BigData $\rightarrow$ FastData)
 	 \item Some tasks can be completed much faster when data are kept in memory
-	 \item Keep data in memory during processing of whole application stack, not only during processing in one application in the stack
-	 \item With data replication you can keep your data only in memory
+	 \item Keeping data in memory during processing of whole application stack, not only during processing in one application in the stack
+	 \item With data replication you can keep your data only in memory (no need to store them in persistent storage)
 	\end{itemize}
 \end{frame}
 
@@ -102,11 +102,11 @@
 		\end{figure}
 	\column{0.6\textwidth}
 		\begin{itemize}
-			\item Datagrid patform
-			\item In-Memory, (optional) Schema-less, NoSQL key-value data store
-			\item Distributed cache (offers massive memory)
-			\item Elastic and scalable (can run on hundreds of nodes)
-			\item Higly available (no SPOF), resilient to node failures
+			\item Data grid platform, written in Java
+			\item In-memory, (optionally) schema-less, No-SQL key-value data store
+			\item Distributed cache - offers massive memory
+			\item Elastic and scalable - can run on hundreds of nodes
+			\item Highly available - no SPOF, resilient to node failures
 			\item Concurrent (MVCC)
 			\item Transactional
 			\item Queryable
@@ -120,13 +120,6 @@
 	\begin{itemize}
 		\item 100\% open-source: \url{https://github.com/infinispan}
 		\item Member of couple research projects (funded by the European Commission)
-% 		\begin{columns}
-% 		\column{0.5\textwidth}
-% 			\begin{itemize}
-% 				\item CloutTM
-% 				\item LEADS
-% 			\end{itemize}
-% 		\column{0.4\textwidth}
 			\begin{figure}
 				\centering
 				\includegraphics[width=3cm]{./img/leads.eps}
@@ -235,10 +228,10 @@
 	A way how to store cache content in some external (persistent) storage.\\
 	Two modes:
 	\begin{itemize}
-	 \item Sychronous (write-through)
+	 \item Synchronous (write-through)
 	 \item Asynchronous (write-behind)
 	\end{itemize}
-	Cachestores:
+	Cache stores:
 	\begin{itemize}
 		\item Single file store and soft-index file store
 		\item JDBC and JPA cache stores
@@ -253,10 +246,10 @@
 \begin{frame}
 	\frametitle{Transactions}
 	\begin{itemize}
-	 \item Support JTA-compliant transactions
+	 \item JTA-compliant transactions
 	 \item Ensures consistency of data
 	 \item Optimistic and pessimistic locking available
-	 \item Read committed and repeated read isolation levels
+	 \item Read committed and repeatable read isolation levels
 	 \item Deadlock detection and recovery
 	 \item Data versioning
 % 		\begin{itemize}
@@ -270,15 +263,15 @@
 \begin{frame}
 	\frametitle{Querying}
 	\begin{itemize}
-		\item needs some data schema (annotrations, protobuf, ...)
-	 \item Search for data using data attributes instead of keys
-	 \item Featured attributes include keyword, range, fuzzy, wildcard, and phrase queries.
-	 \item Combine queries and aggregation functions (but doesn't support joins)
-	 \item Sort, filter, and paginate query results
-	 \item suppor for index or non-indexed queries
-	 \item Allows for indexing of entries as they are stored
-	 \item Indexing
-	 \item Lucene query API or fluent DSL API
+		\item Needs some data schema (protobuf file or annotations)
+		\item Search for data using data attributes instead of keys
+		item Featured attributes include keyword, range, fuzzy, wildcard, and phrase queries.
+		\item Combine queries and aggregation functions (but doesn't support joins)
+		\item Sort, filter, and paginate query results
+		\item Support for index or non-indexed queries
+% 		\item Allows for indexing of entries as they are stored
+% 		\item Indexing
+		\item Lucene query API or fluent DSL API
 	\end{itemize}
 \end{frame}
 
@@ -290,7 +283,7 @@
 	 \item Node authentication and authorization
 	 \item Encryption of communication
 	 \item Audit logging
-	 \item Integration with LDAP and/or Kerbero server (includes ActiveDirectory)
+	 \item Integration with LDAP and/or Kerberos server (includes Active Directory)
 	\end{itemize}
 \end{frame}
 
@@ -304,7 +297,7 @@
 		\item Remote events
 		\item Client near cache
 		\item Rolling upgrades
-		\item Cross data center replication (separate slide??? With HR failover ability)
+		\item Cross data center replication (also HotRod clients support failover to another data center)
 		\item Command line interface
 		\item Map-reduce framework and distributed executors
   \end{itemize}
@@ -312,7 +305,7 @@
 
 
 \begin{frame}
-  \frametitle{Recently implemented features}
+	\frametitle{Recently implemented features: Infinispan 8}
 	\begin{figure}
 		\centering
 		\includegraphics[width=5cm]{./img/infinispan8.eps}
@@ -320,35 +313,38 @@
   \begin{itemize}
     \item Functional API
 		\item Distributed streaming
-		\item Integration with Apache Spark
+		\item Continuous querying, grouping and aggregation
+		\item New management console
+		\item Integration with Apache Spark and Hadoop
+		\item \dots and many more
   \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Integration with other frameworks}
-  \begin{itemize}
-    \item Hibernate
-		\begin{itemize}
-			\item 2-nd level cache
-		\end{itemize}
-		\item Lucene directory
-		\begin{itemize}
-		 \item In-memory Lucene index 
-		\end{itemize}
-		\item Apache Camel
-		\begin{itemize}
-		 \item Infinispan component for Camel
-		\end{itemize}
-		\item Hadoop
-		\begin{itemize}
-			\item In-memory data source for Hadoop cluster
-		\end{itemize}
-		\item Apache Spark
-		\begin{itemize}
-			\item Data source for Spark map-reduce jobs
-		\end{itemize}
-  \end{itemize}
-\end{frame}
+% \begin{frame}
+% 	\frametitle{Integration with other frameworks}
+% 	\begin{itemize}
+% 		\item Hibernate
+% 		\begin{itemize}
+% 			\item 2-nd level cache
+% 		\end{itemize}
+% 		\item Lucene directory
+% 		\begin{itemize}
+% 		 \item In-memory Lucene index 
+% 		\end{itemize}
+% 		\item Apache Camel
+% 		\begin{itemize}
+% 		 \item Infinispan component for Camel
+% 		\end{itemize}
+% 		\item Hadoop
+% 		\begin{itemize}
+% 			\item In-memory data source for Hadoop cluster
+% 		\end{itemize}
+% 		\item Apache Spark
+% 		\begin{itemize}
+% 			\item Data source for Spark map-reduce jobs
+% 		\end{itemize}
+% 	\end{itemize}
+% \end{frame}
 
 \begin{frame}
 	\centering
