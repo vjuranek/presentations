@@ -14,7 +14,7 @@
     <artifactId>temperature-histogram</artifactId>
 
     <properties>
-        <java.main.class>org.infinispan.demo.TemperatureHistogram</java.main.class>
+        <java.main.class>org.infinispan.demo.HistogramPrinter</java.main.class>
     </properties>
 
     <dependencies>

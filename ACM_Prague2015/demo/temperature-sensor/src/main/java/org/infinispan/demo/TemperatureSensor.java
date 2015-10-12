@@ -25,7 +25,7 @@ public class TemperatureSensor {
         System.out.println("Inserting some temperature data into the cache ...");
 
         // Generate temperatures for 2 minutes
-        Thread.sleep(2 * 60 * 1000);
+        Thread.sleep(10 * 60 * 1000);
         randTemp.cancel();
         cacheManager.stop();
         System.out.println("DONE! No more date for you.");

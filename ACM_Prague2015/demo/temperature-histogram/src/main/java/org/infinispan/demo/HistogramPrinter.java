@@ -10,7 +10,7 @@ import org.infinispan.client.hotrod.event.ClientCacheEntryCreatedEvent;
 import org.infinispan.client.hotrod.event.ClientCacheEntryModifiedEvent;
 import org.infinispan.client.hotrod.impl.ConfigurationProperties;
 
-public class TemperatureHistogram {
+public class HistogramPrinter {
     public static final String ISPN_IP = "127.0.0.1";
 
     public static void main(String[] args) throws InterruptedException {
@@ -26,7 +26,7 @@ public class TemperatureHistogram {
 
         // Wait for some histogram updates for a while
         System.out.println("Waiting for some histograms for a while");
-        Thread.sleep(2 * 60 * 1000);
+        Thread.sleep(10 * 60 * 1000);
         System.out.println("DONE");
         histogramCache.removeClientListener(listener);
         cacheManager.stop();
