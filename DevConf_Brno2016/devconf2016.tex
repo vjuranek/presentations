@@ -15,6 +15,8 @@
 \usepackage{colortbl}
 \usepackage{amsmath}
 \usepackage{hyperref}
+\usepackage{listings}
+\usepackage{fancyvrb}
 \usepackage[export]{adjustbox}
 %\usepackage{tikz}
 %\usetikzlibrary{arrows,shapes,backgrounds}
@@ -37,9 +39,36 @@
 {\begin{list}{}{\setlength{\leftmargin}{1em}}\item\tiny\bfseries}
 {\end{list}}
 
+% see http://tex.stackexchange.com/questions/151254/coloring-or-bolding-multiple-lines-in-fancyvrb-integration-with-listings
+\lstdefinestyle{Java}{
+	basicstyle          = \small\ttfamily,
+	language            = Java,
+	numbers             = left,
+	numberstyle         = \tiny,
+	stepnumber          = 1,
+	numbersep           = 5pt,
+	backgroundcolor     = \color{white},
+	showspaces          = false,
+	showstringspaces    = false,
+	showtabs            = false,
+	frame               = single,
+	tabsize             = 2,
+	captionpos          = b,
+	breaklines          = true,
+	breakatwhitespace   = false,
+	morestring          = [b]",
+	stringstyle         = \color{blue},
+	keywordstyle        = \color{magenta},
+	commentstyle        = \color{gray},
+	identifierstyle     = \color{black},
+	moredelim           = **[is][\bfseries]{`}{`},
+	moredelim           = **[is][\color{magenta}]{|}{|}, %Scala style not available, mark keyworkds by hand
+	fancyvrb            = true,
+}
+
 
 \begin{document}
-
+	
 \begin{frame}
  \titlepage
 \end{frame}
@@ -52,11 +81,13 @@
 		\caption{\tiny{Source: http://www.couchbase.com/nosql-resources/what-is-no-sql}}
 	\end{figure}
 	
-	\vspace{-0.5cm}
-	\begin{itemize}
-		\item Needed ability to store unstructured data (often for performance reasons)
-		\item But ability  to talk to RDBMS is often needed as well
-	\end{itemize}
+% 	\visible<2> {
+% 		\vspace{-0.5cm}
+% 		\begin{itemize}
+% 			\item Needed ability to store unstructured data (often for performance reasons)
+% 			\item But ability  to talk to RDBMS is often needed as well
+% 		\end{itemize}
+% 	}
 \end{frame}
 
 \begin{frame}
@@ -77,8 +108,10 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{Some of Big data challenges}
+	\frametitle{Big data}
 	\begin{itemize}
+		\item Needed ability to store unstructured data (often for performance reasons)
+		\item But ability  to talk to RDBMS is often needed as well
 		\item Analysis run on top of the huge amount of data
 		\item Sometimes need to pre-process (semi)structured data
 		\item Cloud achitecture - everything is ephemeral
@@ -107,16 +140,30 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{Speeding up!}
+	\frametitle{Speeding up! I.}
+	\vspace{0.5cm}
+	\visible<1,2>{
+		\centering{\textbf{\Large{Keep computation intensive data in memory}}} \\
+	}
+	\visible<2>{
+		\vspace{1.5cm}
+		\centering{\textbf{\Large{Don't replicate every change}}}
+	}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Apache Spark}
 	\begin{columns}
-	\column{0.38\textwidth}
+	\column{0.18\textwidth}
 		\begin{figure}
 			\centering
-			\includegraphics[width=4cm]{./img/spark-logo.eps}
+			\includegraphics[width=2cm]{./img/spark-logo.eps}
 		\end{figure}
-	\column{0.6\textwidth}
+	\column{0.8\textwidth}
 		\begin{itemize}
-			\item Data grid platform, written in Java
+			\item RDD 
+			\item M. Zaharia et al. Resilient distributed datasets: a fault-tolerant abstraction for in-memory cluster computing. NSDI, 2012.
+			https://www.usenix.org/conference/nsdi12/technical-sessions/presentation/zaharia
 		\end{itemize}
 	\end{columns}
 
@@ -134,52 +181,311 @@
 		\end{figure}
 	\end{columns}
 \end{frame}
+
+\begin{frame}
+	\frametitle{Speeding up! II.}
+	\vspace{0.5cm}
+	\centering{\textbf{\Large{Process data immediatelly once it arrive}}}
+	\vspace{0.5cm}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Spark streaming}
+	\begin{itemize}
+	 \item RDD micro-batches
+	 \item User defined (time) size of the batch
+	\end{itemize}
+
+	\begin{lstlisting}[style=Java]
+		|val| conf = new SparkConf().setAppName("WordCount")
+		|val| ssc = new StreamingContext(conf, `Seconds(1)`)
+	\end{lstlisting}
 	
-% \begin{frame}
-% 	\frametitle{Why caching}
-% 	\begin{figure}
-% 		\centering
-% 		\includegraphics[width=12cm]{./img/xkcd_908.eps}
-% 		\caption{\tiny{Source: Part of \href{http://xkcd.com/908/}{xkcd \#908}}}
-% 	\end{figure}
-% \end{frame}
+	\begin{figure}
+		\centering
+		\includegraphics[width=7cm]{./img/spark-streaming2.eps}
+		\caption{\tiny{Source: https://databricks.com/blog/2015/07/30/diving-into-spark-streamings-execution-model.html}}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Spark streaming}
+	\begin{lstlisting}[style=Java]
+    // Split each line into words
+    |val| words = lines.flatMap(_.split(" "))
+	\end{lstlisting}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm]{./img/streaming-dstream-ops.eps}
+		\caption{\tiny{Source: http://spark.apache.org/docs/latest/streaming-programming-guide.html}}
+	\end{figure}
+\end{frame}
 
 
 \begin{frame}
+	\frametitle{Homework for you: Real-time stream processing frameworks}
+	\begin{columns}
+	\column{0.45\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=3cm]{./img/storm-logo.eps}
+		\end{figure}
+	\column{0.55\textwidth}
+		\vspace{-0.5cm}
+		\textbf{\Large{Apache Storm}} 
+	\end{columns}
+
+	\vspace{1cm}
+	
+	\begin{columns}
+	\column{0.45\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1.5cm]{./img/flink-logo.eps}
+		\end{figure}
+	\column{0.55\textwidth}
+		\vspace{-0.5cm}
+		\textbf{\Large{Apache Flink}}
+	\end{columns}
+	
+	\vspace{1cm}
+	
+	\begin{columns}
+	\column{0.45\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=3cm]{./img/samza.eps}
+		\end{figure}
+	\column{0.55\textwidth}
+		\vspace{-0.5cm}
+		\textbf{\Large{Apache Samza}}
+	\end{columns}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Speeding up! III.}
+	
+	\vspace{0.5cm}
+	\centering{\textbf{\Large{Keep the data in memory all the time}}}
+	\vspace{0.5cm}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=8cm]{./img/xkcd_908.eps}
+		\caption{\tiny{Source: Part of \href{http://xkcd.com/908/}{xkcd \#908}}}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{In-memory data grid: Infinispan}
+	\begin{columns}
+	\column{0.38\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=3cm]{./img/infinispan.eps}
+		\end{figure}
+	\column{0.6\textwidth}
+		\begin{itemize}
+			\item Data grid platform, written in Java
+			\item In-memory, (optionally) schema-less, No-SQL key-value data store
+			\item Distributed cache - offers massive memory
+			\item Elastic and scalable - can run on hundreds of nodes
+			\item Highly available - no SPOF, resilient to node failures
+			\item Concurrent (MVCC)
+			\item Transactional
+			\item Queryable
+			\item Processing for streaming data
+		\end{itemize}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Infinispan integration with Spark}
+	\begin{itemize}
+		\item Almost topology aware
+		\item Connector enables read ISPN data from Spark or write Spark data to ISPN
+	\end{itemize}
+	\vspace{0.5cm}
+%	\visible<1,2> {
+	Creating RDD from data in ISPN cache
+	\begin{lstlisting}[style=Java]
+    |val| config = new Properties
+    config.put("infinispan.rdd.cacheName", "my-cache")
+    config.put("infinispan.client.hotrod.server_list", "127.0.0.1:11222")
+    |val| ispnStream = new InfinispanInputDStream[String, Double](ssc, `StorageLevel.MEMORY_ONLY`, config)  
+	\end{lstlisting}
+%  }
+	\vspace{0.5cm}
+%	\visible<2> {
+	Creating DStream from data in ISPN cache
+	\begin{lstlisting}[style=Java]
+    //same config as in previous example
+    |val| ispnStream = new InfinispanInputDStream[String, Double](ssc, `StorageLevel.MEMORY_ONLY`, config)  
+	\end{lstlisting}
+%  }
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Infinispan integration with Spark}
+	\begin{itemize}
+	 \item ISPN server side filters and convertors can be used for adjusting RDDs when created 
+	 \item ISPN queries can be applied to RDDs
+	\end{itemize}
+	\vspace{0.5cm}
+%	\visible<1,2> {
+	Creating RDD/DStream by quering ISPN cache
+	\begin{lstlisting}[style=Java]
+    |val| query = Search.getQueryFactory(cache).from(classOf[User]).having("name").equal("Vojtech").toBuilder[RemoteQuery].build
+    |val| filteredRDD = rdd.filterByQuery(query, classOf[User])
+	\end{lstlisting}
+%	}
+	\vspace{0.5cm}
+%	\visible<2> {
+	Writing RDD/DStream to ISPN cache
+		\begin{lstlisting}[style=Java]
+    //same config as in previous examples
+    InfinispanDStream[String, Double](temperatureStream).writeToInfinispan(config)
+	\end{lstlisting}
+%	}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Few other ISPN highlights}
+	\begin{itemize}
+	 \item Event listeners
+	\end{itemize}
+	\begin{lstlisting}[style=Java,basicstyle=\tiny\ttfamily]
+    `@ClientListener`
+    public static class MyListener {
+        `@ClientCacheEntryCreated`
+        `@ClientCacheEntryModified`
+        public void onEntryChange(ClientCacheEntryModifiedEvent<String> event) {
+           //TODO some action when entry is created or modified
+        }
+
+        `@ClientCacheEntryRemoved`
+        `@ClientCacheEntryExpired`
+        public void entryRemove(ClientCacheEntryRemovedEvent<String> event) {
+          //TODO some action when entry is removed or expired
+        }
+    }
+	\end{lstlisting}
+	
+	\begin{itemize}
+	 \item Continuous query
+	\end{itemize}
+	\begin{lstlisting}[style=Java,basicstyle=\tiny\ttfamily]
+    QueryFactory qf = Search.getQueryFactory(myCache);
+    Query query = qf.from(User.class).select("name").having("age").lte(30).toBuilder().build();
+    ContinuousQueryListener<Object, Object> listener = new MyListenerI<Object, Object>();
+    ContinuousQuery<Object, Object> cq = new ContinuousQuery<>(cache);
+    cq.addContinuousQueryListener(listener, query); 
+	\end{lstlisting}
+	
+	\begin{itemize}
+			\item Distributed streams - implementation of \texttt{java.util.stream.Stream} over (distributed!) cache data
+		\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Where do we get from Big data?}
+	\visible<1,2,3,4,5,6>{
+	\begin{itemize}
+		\pause
+		\item Data are kept in memory all the time
+		\pause
+		\item Data processing is much faster
+		\pause
+		\item Data are processed once they arrive
+		\pause
+		\item Results of the analysis can be pushed to user by various means, e.g. using continuous queries
+	\end{itemize}
+	}
+	\vspace{0.5cm}
+	\visible<6>{
+		\centering{\textbf{\LARGE{== Fast data?}}}
+	}
+\end{frame}
+
+\begin{frame}
 	\frametitle{Demo}
-% 	\centering
-% 	\huge{\textbf{Demo}} \\
-% 	\vspace{1cm}
 	\textbf{Infinispan integration with Apache Spark} \\
 	\small{\textbf{Temperature}}
-% 	\begin{figure}
-% 		\centering
-% 		\includegraphics[width=7cm]{./img/borat_hello_world.eps}
-% 		\caption{\tiny{Source: https://twitter.com/DEVOPS\_BORAT/status/222837225921060864}}
-% 	\end{figure}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Demo - Hello world}
+	\visible<1,2,3,4,5>{
 	\begin{figure}
 		\centering
 		\includegraphics[width=7cm]{./img/borat_hello_world.eps}
+		\vspace{-0.3cm}
 		\caption{\tiny{Source: https://twitter.com/DEVOPS\_BORAT/status/222837225921060864}}
 	\end{figure}
-	
+	}
+	\vspace{-0.2cm}
+	\visible<2,3,4,5>{
 	\begin{itemize}
-	 \item One Infinispan server for storing incomming data and results
-	 \item One app randomly generating place and temperature (simulating e.g. network of temperature sensors)
-	 \item Spark streaming analyzing data 
-	 \item Client app showing result data when they arrive
+		\pause
+		\item One Infinispan server for storing incomming data and results
+		\pause
+		\item One app randomly generating place and temperature (simulating e.g. network of temperature sensors)
+		\pause
+		\item Spark streaming for analyzing data 
+		\pause
+		\item Client app showing result data when they arrive, using Infinispan continuous query
 	\end{itemize}
+	}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Summary}
+	\vspace{3cm}
+	\centering{\textbf{\LARGE{Do the data analysis with framework which keep the data in memory during processing}}}
+	\vspace{3cm}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Summary}
+	\vspace{3cm}
+	\centering{\textbf{\LARGE{Process data once it arrive}}}
+	\vspace{3cm}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Summary}
+	\vspace{3cm}
+	\centering{\textbf{\LARGE{If possible, keep data in memory during whole application stack}}}
+	\vspace{3cm}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Summary}
+	\vspace{3cm}
+	\centering{\textbf{\LARGE{Infinispan provides many useful features like integration with Apache Spark, continuous query, cache listeners and many others}}}
+	\vspace{3cm}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Summary}
 	\begin{itemize}
-	 \item 
+		\item Do the data analysis with framework which keep the data in memory during processing
+		\item Process data once it arrive
+		\item If possible, keep data in memory during whole application stack
+		\item Infinispan provides many useful features like integration with Apache Spark, continuous query, cache listeners and many others
 	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Question?}
+	\begin{figure}
+		\centering
+		\includegraphics[width=6cm]{./img/simple_answers.eps}
+		\caption{\tiny{Source: https://xkcd.com/1289/}}
+	\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -191,9 +497,8 @@
 	\large{\color{blue}{\url{http://infinispan.org/}}} \\
 	\vspace{1cm}
 	\huge{\textbf{Thank you for your attention!}} \\
-	\vspace{1cm}
-	\huge{\textbf{Questions?}}
+	%\vspace{1cm}
+	%\huge{\textbf{Questions?}}
 \end{frame}
-
 
 \end{document}
