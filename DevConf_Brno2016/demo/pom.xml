@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.infinispan.demo</groupId>
+	<artifactId>temperature-stream</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+
+	<modules>
+		<module>spark-temperature-analysis</module>
+		<module>temperature-client</module>
+		<module>temperature-sensor</module>
+	</modules>
+
+	<properties>
+		<version.jdk>1.8</version.jdk>
+		<version.scala>2.10.4</version.scala>
+		<version.maven.compiler>3.3</version.maven.compiler>
+		<version.maven.exec>1.4.0</version.maven.exec>
+		<version.maven.scala>3.2.0</version.maven.scala>
+		<version.infinispan>8.1.0.Final</version.infinispan>
+		<version.spark.core>1.6.0</version.spark.core>
+		<version.spark.ispn>0.3-SNAPSHOT</version.spark.ispn>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.infinispan</groupId>
+				<artifactId>infinispan-client-hotrod</artifactId>
+				<version>${version.infinispan}</version>
+			</dependency>
+			<dependency>
+			  <groupId>org.infinispan</groupId>
+			  <artifactId>infinispan-remote</artifactId>
+			  <version>${version.infinispan}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-core_2.10</artifactId>
+				<version>${version.spark.core}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-streaming_2.10</artifactId>
+				<version>${version.spark.core}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.infinispan</groupId>
+				<artifactId>infinispan-spark_2.10</artifactId>
+				<version>${version.spark.ispn}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-library</artifactId>
+				<version>${version.scala}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${version.maven.compiler}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>${version.maven.exec}</version>
+				</plugin>
+				<plugin>
+					<groupId>net.alchim31.maven</groupId>
+					<artifactId>scala-maven-plugin</artifactId>
+					<version>${version.maven.scala}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>
