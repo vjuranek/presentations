@@ -188,7 +188,7 @@
 \begin{frame}
 	\frametitle{Speeding up! II.}
 	\vspace{0.5cm}
-	\centering{\textbf{\Large{Process data immediately once it arrive}}}
+	\centering{\textbf{\Large{Process data immediately once it arrives}}}
 	\vspace{0.5cm}
 \end{frame}
 
@@ -288,6 +288,9 @@
 			\centering
 			\includegraphics[width=3cm]{./img/infinispan.eps}
 		\end{figure}
+		\centering
+		\vspace{0.3cm}
+		\textbf{\color{blue}{\url{http://infinispan.org/}}}
 	\column{0.6\textwidth}
 		\begin{itemize}
 			\item Data grid platform, written in Java
@@ -305,8 +308,8 @@
 \begin{frame}[fragile]
 	\frametitle{Infinispan integration with Spark}
 	\begin{itemize}
-		\item Spark partitions contain only cache segments owned by the associated ISPN server
 		\item Connector enables read ISPN data from Spark or write Spark data to ISPN
+		\item Spark partitions contain only cache segments owned by the associated ISPN server
 	\end{itemize}
 	\vspace{0.3cm}
 %	\visible<1,2> {
@@ -315,7 +318,7 @@
     |val| config = new Properties
     config.put("infinispan.rdd.cacheName", "my-cache")
     config.put("infinispan.client.hotrod.server_list", "127.0.0.1:11222")
-    |val| ispnStream = new InfinispanInputDStream[String, Double](ssc, `StorageLevel.MEMORY_ONLY`, config) //for String Double pairs
+    |val| ispnRDD = new InfinispanRDD[String, String](sc, configuration = config) //for String String pairs
 	\end{lstlisting}
 %  }
 	\vspace{0.3cm}
