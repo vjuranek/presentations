@@ -134,10 +134,10 @@
 \begin{frame}
 	\frametitle{Speeding up! I.}
 	\vspace{0.5cm}
-	\visible<1,2>{
+	\visible<2,3>{
 		\centering{\textbf{\Large{Keep computation intensive data in memory}}} \\
 	}
-	\visible<2>{
+	\visible<3>{
 		\vspace{1.5cm}
 		\centering{\textbf{\Large{Don't replicate every single change of the data}}}
 	}
@@ -164,9 +164,10 @@
 			\end{itemize}
 			\item Lazy evaluation - only upon calling action on RDD
 			\item RDD contains enough information (its linage) to be (re)created from a stable source 
-			\item \color{blue}\href{https://www.usenix.org/conference/nsdi12/technical-sessions/presentation/zaharia}{M. Zaharia et al., NSDI, 2012}.
 			% Rather than thinking of an RDD as containing specific data, it is best to think of each RDD as consisting of instructions on how to compute the data that we build up through transformations.
 		\end{itemize}
+		\vspace{0.5cm}
+		See \color{blue}\href{https://www.usenix.org/conference/nsdi12/technical-sessions/presentation/zaharia}{M. Zaharia et al., NSDI, 2012}.
 	\end{columns}
 \end{frame}
 	
@@ -187,9 +188,11 @@
 
 \begin{frame}
 	\frametitle{Speeding up! II.}
-	\vspace{0.5cm}
-	\centering{\textbf{\Large{Process data immediately once it arrives}}}
-	\vspace{0.5cm}
+	\visible<2> {
+		\vspace{0.5cm}
+		\centering{\textbf{\Large{Process data immediately once it arrives}}}
+		\vspace{0.5cm}
+	}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -269,15 +272,17 @@
 \begin{frame}
 	\frametitle{Speeding up! III.}
 	
-	\vspace{0.5cm}
-	\centering{\textbf{\Large{Keep the data in memory all the time}}}
-	\vspace{0.5cm}
+	\visible<2> {
+		\vspace{0.5cm}
+		\centering{\textbf{\Large{Keep the data in memory all the time}}}
+		\vspace{0.5cm}
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=8cm]{./img/xkcd_908.eps}
-		\caption{\tiny{Source: Part of \href{http://xkcd.com/908/}{xkcd \#908}}}
-	\end{figure}
+		\begin{figure}
+			\centering
+			\includegraphics[width=8cm]{./img/xkcd_908.eps}
+			\caption{\tiny{Source: Part of \href{http://xkcd.com/908/}{xkcd \#908}}}
+		\end{figure}
+  }
 \end{frame}
 
 \begin{frame}
@@ -444,7 +449,7 @@
 		\pause
 		\item One app randomly generating place and temperature (simulating e.g. network of temperature sensors)
 		\pause
-		\item Spark streaming for analyzing the data 
+		\item Spark streaming for computing the average temperature at given place 
 		\pause
 		\item Client app showing result data when they arrive, using Infinispan cache listener
 	\end{itemize}
