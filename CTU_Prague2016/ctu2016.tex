@@ -178,16 +178,18 @@
 
 \begin{frame}
 	\frametitle{Big data - some of the challenges}
-	\visible<1,2> {
 		\begin{itemize}
 			\item Analysis run on top of the huge amount of data
 			\item Ability to store huge amount of unstructured data (often for performance reasons)
-			\item Highly scalable solution (also because of cost effectiveness)
-			\item Information privacy
-			\item Cloud architecture - everything is ephemeral
 			\item But also ability  to talk to RDBMS or query structured data is often needed as well
+			\item Highly scalable solution (also because of cost effectiveness)
+			\item Cloud architecture - everything is ephemeral
+			\item Information privacy
 		\end{itemize}
-	}
+\end{frame}
+
+\begin{frame}
+	\frametitle{NoSQL}
 	\visible<2> {
 		\begin{figure}
 			\centering
@@ -198,7 +200,7 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{Why NoSQL}
+	\frametitle{NoSQL}
 	\begin{itemize}
 		\item Nature of the data
 		\pause
@@ -242,6 +244,15 @@
 
 \begin{frame}
 	\frametitle{Why in-memory}
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm]{./img/xkcd_908.eps}
+		\caption{\tiny{Source: Part of \href{http://xkcd.com/908/}{xkcd \#908}}}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Why in-memory}
 	\begin{itemize}
 	 \item Lots of data is needed in real-time (BigData $\rightarrow$ FastData)
 	 \pause
@@ -251,15 +262,6 @@
 	 \pause
 	 \item With data replication you can keep your data only in memory (no need to store them in persistent storage)
 	\end{itemize}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Why caching}
-	\begin{figure}
-		\centering
-		\includegraphics[width=12cm]{./img/xkcd_908.eps}
-		\caption{\tiny{Source: Part of \href{http://xkcd.com/908/}{xkcd \#908}}}
-	\end{figure}
 \end{frame}
 
 \begin{frame}
