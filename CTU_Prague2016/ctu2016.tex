@@ -480,10 +480,12 @@
 		\begin{tabular}{|c||c|c|c|c|c|}
 		\hline
 			& & & & & \\
-		\textbf{Protocol} & \textbf{Format} & \textbf{Client libs} & \textbf{Clustered} & \textbf{Smart routing} & \textbf{Load balancing / Failover} \\
+			\textbf{Protocol} & \textbf{Format} & \textbf{Client libs} & \textbf{Clustered} & \textbf{Smart routing} & \textbf{Load balancing} \\
+			& & & & & \textbf{/ Failover} \\
 		 \hline
 			& & & & & \\
-		 \textbf{Hot Rod} & binary & Java, C++, C\# & yes & yes & dynamic \\
+		 \textbf{Hot Rod} & binary & Java, C++,  & yes & yes & dynamic \\
+		 & & C\#, JS & & & \\
 			& & & & & \\
 		 \textbf{Memcached} & text & many & yes & no & only predefined server list \\
 			& & & & & \\
@@ -504,6 +506,7 @@
 		\item Java
 		\item C\#
 		\item C++
+		\item JavaScript (\color{red}new!\color{black})
 		\item Python
 		\item Ruby
 	\end{itemize}
