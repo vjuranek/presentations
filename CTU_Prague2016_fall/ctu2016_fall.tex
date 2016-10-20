@@ -568,43 +568,79 @@ cm.stop();
 \begin{frame}[fragile]
 	\frametitle{Examples: querying}
 	\begin{lstlisting}[style=Java]
-  !@Indexed!
-  public class Person {
-    !@Field!(store = Store.YES, analyze = Analyze.NO)
-    String name;
-
-    !@Field!(store = Store.YES, analyze = Analyze.NO, indexNullAs = Field.DEFAULT_NULL_TOKEN)
-    String surname;
-
-    public Person(String name, String surname) {
-      this.name = name;
-      this.surname = surname;
-    }
-	}
+public class Person {
+  String name;
+  String surname;
+	
+  public Person(String name, String surname) {
+    this.name = name;
+    this.surname = surname;
+  }
+}
 	\end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
-% 	\frametitle{Querying: example (cont.)}
-% 	\vspace{-0.4cm}
+	\frametitle{Examples: querying}
+		\begin{lstlisting}[style=Java]
+ConfigurationBuilder cb = new ConfigurationBuilder();
+EmbeddedCacheManager cm = new DefaultCacheManager(cb.build());
+Cache<String, Person> cache = cm.getCache();
+cache.put("person1", new Person("Will", "Shakespeare"));
+
+// Obtain a query factory for the cache
+QueryFactory<?> queryFactory = Search.getQueryFactory(cache);
+
+// Construct a query
+Query query = queryFactory.from(Person.class).having("name").eq("Will").toBuilder().build();
+      
+// Execute the query
+List<Person> matches = query.list();
+
+matches.forEach(person -> System.out.printf("Match: %s", person));
+cm.stop();
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Examples: querying with index}
 	\begin{lstlisting}[style=Java]
-	public class InfinispanQuery {
-    public static void main(String[] args) {
-      ConfigurationBuilder b = new ConfigurationBuilder();
-      b.indexing().index(Index.ALL).addProperty("default.directory_provider", "ram").addProperty("lucene_version", "LUCENE_CURRENT");
-      DefaultCacheManager cm = new DefaultCacheManager(builder.build());
-      Cache<String, Person> cache = cm.getCache();
-      cache.put("person1", new Person("Will", "Shakespeare"));
-      // Obtain a query factory for the cache
-      QueryFactory<?> queryFactory = Search.getQueryFactory(cache);
-      // Construct a query
-      Query query = queryFactory.from(Person.class).having("name").eq("Will").toBuilder().build();
-      // Execute the query
-      List<Person> matches = query.list();
-      matches.forEach(person -> System.out.printf("Match: %s", person));
-      cacheManager.stop();
-   }
-	}
+!@Indexed!
+public class Person {
+  !@Field!(store = Store.YES, analyze = Analyze.NO)
+  String name;
+
+  !@Field!(store = Store.YES, analyze = Analyze.NO, indexNullAs = Field.DEFAULT_NULL_TOKEN)
+  String surname;
+
+  public Person(String name, String surname) {
+    this.name = name;
+    this.surname = surname;
+  }
+}
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Examples: querying with index}
+	\begin{lstlisting}[style=Java]
+ConfigurationBuilder cb = new ConfigurationBuilder();
+cb.indexing().index(Index.ALL); //.addProperty("default.directory_provider", "ram");
+EmbeddedCacheManager cm = new DefaultCacheManager(cb.build());
+Cache<String, Person> cache = cm.getCache();
+cache.put("person1", new Person("Will", "Shakespeare"));
+      
+// Obtain a query factory for the cache
+QueryFactory<?> queryFactory = Search.getQueryFactory(cache);
+
+// Construct a query
+Query query = queryFactory.from(Person.class).having("name").eq("Will").toBuilder().build();
+      
+// Execute the query
+List<Person> matches = query.list();
+
+matches.forEach(person -> System.out.printf("Match: %s", person));
+cm.stop();
 	\end{lstlisting}
 \end{frame}
 
