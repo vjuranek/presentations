@@ -196,24 +196,6 @@
 	\end{figure}
 \end{frame}
 
-
-\begin{frame}
-	\frametitle{Big data characteristics}
-	%\href{https://en.wikipedia.org/wiki/Big\_data#Characteristics}{wikipedia} says:
-	\begin{itemize}
-		\pause
-		\item \textbf{Volume:} unprecedented amount of data being stored
-		\pause
-		\item \textbf{Velocity:} speed at which the data is generated
-		\pause
-		\item \textbf{Variety:} the type and nature of the data - from structured data in traditional databases to unstructured text documents, email, video, audio etc.
-		\pause
-		\item \textbf{Variability:} the amount of incoming data can highly vary
-		\pause
-		\item \textbf{Veracity:} the quality of captured data can vary greatly as well
-	\end{itemize}
-\end{frame}
-
 \begin{frame}
 	\frametitle{Big data - some of the challenges}
 		\begin{itemize}
@@ -224,17 +206,6 @@
 			\item Cloud architecture - everything is ephemeral
 			\item Information privacy
 		\end{itemize}
-\end{frame}
-
-\begin{frame}
-	\frametitle{NoSQL}
-	\visible<2> {
-		\begin{figure}
-			\centering
-			\includegraphics[width=10cm]{./img/borat_learn_nosql.eps}
-			\caption{\tiny{Source: \url{https://twitter.com/devops_borat/status/141368065110708224}}}
-		\end{figure}
-	}
 \end{frame}
 
 \begin{frame}
@@ -253,6 +224,17 @@
 		\includegraphics[width=10cm]{./img/json_vs_sql.eps}
 		\caption{\tiny{Source: \url{www.couchbase.com/sites/default/files/uploads/all/whitepapers/NoSQL-Whitepaper.pdf}}}
 	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{NoSQL}
+%	\visible<2> {
+		\begin{figure}
+			\centering
+			\includegraphics[width=10cm]{./img/borat_learn_nosql.eps}
+			\caption{\tiny{Source: \url{https://twitter.com/devops_borat/status/141368065110708224}}}
+		\end{figure}
+%	}
 \end{frame}
 
 \begin{frame}
@@ -335,21 +317,21 @@
 	\column{0.6\textwidth}
 		\begin{itemize}
 			\item In-memory data grid platform, written in Java
-			\pause
+			%\pause
 			\item Schema-less (optionally), No-SQL key-value data store
-			\pause
+			%\pause
 			\item Distributed cache - offers massive memory
-			\pause
+			%\pause
 			\item Elastic and scalable - can run on hundreds of nodes
-			\pause
+			%\pause
 			\item Highly available - no SPOF, resilient to node failures
-			\pause
+			%\pause
 			\item Multi-version concurrency control (MVCC)
-			\pause
+			%\pause
 			\item Transactional
-			\pause
+			%\pause
 			\item Queryable
-			\pause
+			%\pause
 			\item Processing for streaming data
 		\end{itemize}
 	\end{columns}
@@ -648,16 +630,16 @@ cm.stop();
 	\frametitle{Transactions, consistency, locking and isolation}
 	\begin{itemize}
 		\item JTA-compliant transactions
-		\pause
+		%\pause
 		\item Deadlock detection and recovery (e.g. when ISPN fails during commit phase of the transaction)
-		\pause
+		%\pause
 		\item Data versioning
 % 		\begin{itemize}
 % 			\item Simple versioning
 % 			\item Partition-aware versioning (vector locks)
 % 			\item External versioning - used e.g. with Hibernate, where locks are provided by database
 % 		\end{itemize}
-		\pause
+		%\pause
 		\item Ensures consistency of data, consistency guarantee: 
 		lock for key \texttt{K} is always acquired on the same node of the cluster (key \textbf{primary owner}), regardless of where the transaction originates
 	\end{itemize}
@@ -673,13 +655,13 @@ cm.stop();
 	\begin{itemize}
 		\pause
 		\item Cluster creation and deletion. Cluster nodes can be spread across LANs or WANs.
-		\pause
+		%\pause
 		\item Membership detection and notification about joined/left/crashed cluster nodes.
-		\pause
+		%\pause
 		\item Sending and receiving of node-to-cluster messages (point-to-multipoint).
-		\pause
+		%\pause
 		\item Sending and receiving of node-to-node messages (point-to-point).
-		\pause
+		%\pause
 		\item Detection and removal of crashed nodes.
 	\end{itemize}
 	More about JGroups in upcoming \textbf{WildFly clustering course}!
@@ -800,7 +782,7 @@ cm.stop();
 		\item Java
 		\item C\#
 		\item C++
-		\item JavaScript (\color{red}new!\color{black})
+		\item JavaScript
 		\item Python
 		\item Ruby
 	\end{itemize}
@@ -845,36 +827,21 @@ cm.stop();
 \end{frame}
 
 
-% \begin{frame}
-% 	\frametitle{Integration with other frameworks}
-% 	\begin{itemize}
-% 		\pause
-% 		\item Hibernate
-% 		\begin{itemize}
-% 			\item 2-nd level cache
-% 		\end{itemize}
-% 		\pause
-% 		\item Lucene directory
-% 		\begin{itemize}
-% 		 \item In-memory Lucene index 
-% 		\end{itemize}
-% 		\pause
-% 		\item Apache Camel
-% 		\begin{itemize}
-% 		 \item Infinispan component for Camel
-% 		\end{itemize}
-% 		\pause
-% 		\item Hadoop
-% 		\begin{itemize}
-% 			\item In-memory data source for Hadoop cluster
-% 		\end{itemize}
-% 		\pause
-% 		\item Apache Spark
-% 		\begin{itemize}
-% 			\item Data source for Spark map-reduce jobs
-% 		\end{itemize}
-% 	\end{itemize}
-% \end{frame}
+\begin{frame}
+	\frametitle{OpenShift}
+	\begin{itemize}
+		\item Try Infinispan on OpenShift
+		\item \url{https://www.openshift.com/} 
+		\item Platfor as a Service (PaaS)
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm]{./img/platform.eps}
+		\caption{\tiny{Source: \url{http://dilbert.com/strip/2011-01-07}}}
+	\end{figure}
+	\vspace{-0.5cm}
+	Search \texttt{OpenShift} demo on \url{https://github.com/infinispan-demos/links}
+\end{frame}
 
 \begin{frame}
 	\frametitle{Summary}
@@ -984,6 +951,55 @@ cm.stop();
 \end{frame}
 
 \begin{frame}
+	\frametitle{Big data characteristics}
+	%\href{https://en.wikipedia.org/wiki/Big\_data#Characteristics}{wikipedia} says:
+	\begin{itemize}
+		%\pause
+		\item \textbf{Volume:} unprecedented amount of data being stored
+		%\pause
+		\item \textbf{Velocity:} speed at which the data is generated
+		%\pause
+		\item \textbf{Variety:} the type and nature of the data - from structured data in traditional databases to unstructured text documents, email, video, audio etc.
+		%\pause
+		\item \textbf{Variability:} the amount of incoming data can highly vary
+		%\pause
+		\item \textbf{Veracity:} the quality of captured data can vary greatly as well
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Integration with other frameworks}
+	\begin{itemize}
+		%\pause
+		\item Hibernate
+		\begin{itemize}
+			\item 2-nd level cache
+		\end{itemize}
+		%\pause
+		\item Lucene directory
+		\begin{itemize}
+		 \item In-memory Lucene index 
+		\end{itemize}
+		%\pause
+		\item Apache Camel
+		\begin{itemize}
+		 \item Infinispan component for Camel
+		\end{itemize}
+		%\pause
+		\item Hadoop
+		\begin{itemize}
+			\item In-memory data source for Hadoop cluster
+		\end{itemize}
+		%\pause
+		\item Apache Spark
+		\begin{itemize}
+			\item Data source for Spark map-reduce jobs
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
 	\frametitle{Transactions, consistency, locking and isolation (cont.)}
 	\begin{itemize}
 		\item \textbf{Pessimistic} and \textbf{optimistic} locking available
@@ -1021,34 +1037,34 @@ cm.stop();
 	\frametitle{Security}
 	\begin{itemize}
 	 \item Role based access control
-	 \pause
+	 %\pause
 	 \item User authentication
-	 \pause
+	 %\pause
 	 \item Node authentication and authorization
-	 \pause
+	 %\pause
 	 \item Encryption of communication
-	 \pause
+	 %\pause
 	 \item Audit logging
-	 \pause
+	 %\pause
 	 \item Integration with LDAP and/or Kerberos server (includes Active Directory)
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Recently implemented features: Infinispan 8}
+	\frametitle{Features in Infinispan 8}
 	\begin{figure}
 		\centering
 		\includegraphics[width=5cm]{./img/infinispan8.eps}
 	\end{figure}
   \begin{itemize}
     \item Functional API
-		\pause
+		%\pause
 		\item Distributed streams
-		\pause
+		%\pause
 		\item Continuous querying, grouping and aggregation
-		\pause
+		%\pause
 		\item New management console
-		\pause
+		%\pause
 		\item Integration with Apache Spark and Hadoop
 		\item \dots and more
   \end{itemize}
