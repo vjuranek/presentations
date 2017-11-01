@@ -171,7 +171,7 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{How big are Big data?}
+	\frametitle{How big is Big data?}
 	\visible<2,3> {
 		\begin{figure}
 			\centering
@@ -239,17 +239,24 @@
 
 \begin{frame}
 	\centering
-	\huge{\textbf{What is a data grid?}}
+	\huge{\textbf{What is a in-memory data grid?}}
 \end{frame}
 
 \begin{frame}
 	\frametitle{What is a data grid?}
+	\centering
+	\color{blue}\textbf{
+		In-memory = all data is kept in memory \\
+		Grid = too big to kept data on one node, data is distributed across more/many nodes
+	}\color{black}
+	\visible<2,3> {
 	\begin{itemize}
 	 \item An in-memory distributed data store designed for fast access to large volumes of data and scalability.
 	 \item Commonly a complementary layer to the relational database and the application.
 	\end{itemize}
+  }
 	\centering
-	\visible<2> {
+	\visible<3> {
 	\color{blue}\textbf{Key data grid characteristics:}\color{black}
 	\begin{itemize}
 	 \item In-memory, distributed caching
@@ -708,24 +715,28 @@ cm.stop();
 
 \begin{frame}
 	\frametitle{Infinispan modes}
-	\begin{columns}
-	\column{0.5\textwidth}
-		\begin{itemize}
-			\item Embedded (library, in-VM)
-		\end{itemize}
-		\begin{figure}
-			%\centering
-			\includegraphics[width=5cm]{./img/ispn-emb.eps}
-		\end{figure}
-	\column{0.5\textwidth}
-		\begin{itemize}
-			\item Client-server (remote)
-		\end{itemize}
-		\begin{figure}
-			%\centering
-			\includegraphics[width=5cm]{./img/ispn-cs.eps}
-		\end{figure}
-	\end{columns}
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm]{./img/ispn_modes.eps}
+	\end{figure}
+% 	\begin{columns}
+% 	\column{0.5\textwidth}
+% 		\begin{itemize}
+% 			\item Embedded (library, in-VM)
+% 		\end{itemize}
+% 		\begin{figure}
+% 			%\centering
+% 			\includegraphics[width=5cm]{./img/ispn-emb.eps}
+% 		\end{figure}
+% 	\column{0.5\textwidth}
+% 		\begin{itemize}
+% 			\item Client-server (remote)
+% 		\end{itemize}
+% 		\begin{figure}
+% 			%\centering
+% 			\includegraphics[width=5cm]{./img/ispn-cs.eps}
+% 		\end{figure}
+% 	\end{columns}
 \end{frame}
 
 
@@ -819,6 +830,7 @@ cm.stop();
 	\begin{itemize}
 		\item Cache for backend 
 		\item Fast data backend
+		\item HTTP session off-loading
 		\item Hibernate 2-nd level cache
 		\item In-memory Lucene index
 		\item Fast data backend for Apache Spark or Hadoop
@@ -832,7 +844,7 @@ cm.stop();
 	\begin{itemize}
 		\item Try Infinispan on OpenShift
 		\item \url{https://www.openshift.com/} 
-		\item Platfor as a Service (PaaS)
+		\item Platform as a Service (PaaS)
 	\end{itemize}
 	\begin{figure}
 		\centering
@@ -840,7 +852,7 @@ cm.stop();
 		\caption{\tiny{Source: \url{http://dilbert.com/strip/2011-01-07}}}
 	\end{figure}
 	\vspace{-0.5cm}
-	Search \texttt{OpenShift} demo on \url{https://github.com/infinispan-demos/links}
+	Search \texttt{OpenShift} demos on \url{https://github.com/infinispan-demos/links}
 \end{frame}
 
 \begin{frame}
@@ -881,18 +893,19 @@ cm.stop();
 \begin{frame}
 	\frametitle{Further study materials}
 	\begin{itemize}
-		\item \color{blue}\href{http://infinispan.org/documentation/}{Infinispan documentation}
-		\item \href{https://jcp.org/en/jsr/detail?id=107}{JSR 107: JCACHE - Java Temporary Caching API}\color{black}
+		\item \color{blue}\href{http://infinispan.org/documentation/}{\texttt{Infinispan documentation}}
+		\item \href{https://jcp.org/en/jsr/detail?id=107}{\texttt{JSR 107: JCACHE - Java Temporary Caching API}}\color{black}
 		\item M. Surtani, F. Marchioni, Infinispan Data Grid Platform,  Packt Publishing, 2012
 		\item W. dos Santos, Infinispan Data Grid Platform Definitive Guide, Packt Publishing, 2015
 		\item M. Kleppmann, Designing Data-Intensive Applications, O'Reilly Media, Inc., 2016
+		\item M. Takada,  \color{blue}\href{http://book.mixu.net/distsys/}{\texttt{Distributed systems for fun and profit}}\color{black}
 		\vspace{0.5cm}
 		\item  B. Burke, A. Rubinger, Enterprise JavaBeans 3.1, 6th Edition,  O'Reilly Media, Inc., 2010
 		\vspace{0.5cm}
 		\color{blue}
-		\item \href{https://www.coursera.org/course/cloudcomputing}{Coursera: Cloud Computing Concepts}
-		\item \href{https://www.coursera.org/course/cloudcomputing2}{Coursera: Cloud Computing Concepts: Part 2}
-		\item \href{https://www.coursera.org/course/cloudapplications}{Coursera: Cloud Computing Applications}
+		\item \href{https://www.coursera.org/course/cloudcomputing}{\texttt{Coursera: Cloud Computing Concepts}}
+			\item \href{https://www.coursera.org/course/cloudcomputing2}{\texttt{Coursera: Cloud Computing Concepts: Part 2}}
+			\item \href{https://www.coursera.org/course/cloudapplications}{\texttt{Coursera: Cloud Computing Applications}}
 	\end{itemize}
 \end{frame}
 
@@ -967,6 +980,13 @@ cm.stop();
 	\end{itemize}
 \end{frame}
 
+\begin{frame}
+	\frametitle{Analyst recognition}
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm]{./img/analyst_recognition.eps}
+	\end{figure}
+\end{frame}
 
 \begin{frame}
 	\frametitle{Integration with other frameworks}
