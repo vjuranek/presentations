@@ -394,30 +394,6 @@ ecm.stop();
 \end{frame}
 
 \begin{frame}[fragile]
-	\frametitle{Basic features: expiration}
-	Removing entries from the cache: expiration
-	\begin{lstlisting}[style=Java]
-ConfigurationBuilder().expiration().maxIdle(!5000L!)
-	\end{lstlisting}
-	
-	\begin{lstlisting}[style=Java]
-Configuration conf = new ConfigurationBuilder().expiration().maxIdle(expiration).build();
-EmbeddedCacheManager ecm = new DefaultCacheManager(conf);
-Cache<String, String> cache = ecm.getCache();
-
-for (int i = 0; i < 100; i++) {
-    cache.put("key" + i, "value" + i);
-}
-
-System.out.printf("Cache size: %d\n", cache.size());
-Thread.sleep(expiration);
-System.out.printf("Cache size: %d\n", cache.size());
-
-ecm.stop();
-	\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
 	\frametitle{Basic features: cache listener}
 	\begin{lstlisting}[style=Java]
 cache.addListener(new EntryCreatedListener());
@@ -577,48 +553,6 @@ EmbeddedCacheManager cm = new DefaultCacheManager(cb.build());
 Cache<String, Person> cache = cm.getCache();
 cache.put("person1", new Person("Will", "Shakespeare"));
 
-// Obtain a query factory for the cache
-QueryFactory<?> queryFactory = Search.getQueryFactory(cache);
-
-// Construct a query
-Query query = queryFactory.from(Person.class).having("name").eq("Will").toBuilder().build();
-      
-// Execute the query
-List<Person> matches = query.list();
-
-matches.forEach(person -> System.out.printf("Match: %s", person));
-cm.stop();
-	\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-	\frametitle{Examples: querying with index}
-	\begin{lstlisting}[style=Java]
-!@Indexed!
-public class Person {
-  !@Field!(store = Store.YES, analyze = Analyze.NO)
-  String name;
-
-  !@Field!(store = Store.YES, analyze = Analyze.NO, indexNullAs = Field.DEFAULT_NULL_TOKEN)
-  String surname;
-
-  public Person(String name, String surname) {
-    this.name = name;
-    this.surname = surname;
-  }
-}
-	\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-	\frametitle{Examples: querying with index}
-	\begin{lstlisting}[style=Java]
-ConfigurationBuilder cb = new ConfigurationBuilder();
-cb.indexing().index(Index.ALL); //.addProperty("default.directory_provider", "ram");
-EmbeddedCacheManager cm = new DefaultCacheManager(cb.build());
-Cache<String, Person> cache = cm.getCache();
-cache.put("person1", new Person("Will", "Shakespeare"));
-      
 // Obtain a query factory for the cache
 QueryFactory<?> queryFactory = Search.getQueryFactory(cache);
 
@@ -960,6 +894,73 @@ cm.stop();
 		sed -i 's/<!-- a/<a/;s/t -->/t>/' pom.xml #switch to local random weather service
 		mvn clean package
 		mvn exec:exec
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Basic features: expiration}
+	Removing entries from the cache: expiration
+	\begin{lstlisting}[style=Java]
+ConfigurationBuilder().expiration().maxIdle(!5000L!)
+	\end{lstlisting}
+	
+	\begin{lstlisting}[style=Java]
+Configuration conf = new ConfigurationBuilder().expiration().maxIdle(expiration).build();
+EmbeddedCacheManager ecm = new DefaultCacheManager(conf);
+Cache<String, String> cache = ecm.getCache();
+
+for (int i = 0; i < 100; i++) {
+    cache.put("key" + i, "value" + i);
+}
+
+System.out.printf("Cache size: %d\n", cache.size());
+Thread.sleep(expiration);
+System.out.printf("Cache size: %d\n", cache.size());
+
+ecm.stop();
+	\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+	\frametitle{Examples: querying with index}
+	\begin{lstlisting}[style=Java]
+!@Indexed!
+public class Person {
+  !@Field!(analyze = Analyze.NO)
+  String name;
+
+  !@Field!(analyze = Analyze.NO, indexNullAs = Field.DEFAULT_NULL_TOKEN)
+  String surname;
+
+  public Person(String name, String surname) {
+    this.name = name;
+    this.surname = surname;
+  }
+}
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Examples: querying with index}
+	\begin{lstlisting}[style=Java]
+ConfigurationBuilder cb = new ConfigurationBuilder();
+cb.indexing().index(Index.ALL); //.addProperty("default.directory_provider", "ram");
+EmbeddedCacheManager cm = new DefaultCacheManager(cb.build());
+Cache<String, Person> cache = cm.getCache();
+cache.put("person1", new Person("Will", "Shakespeare"));
+      
+// Obtain a query factory for the cache
+QueryFactory<?> queryFactory = Search.getQueryFactory(cache);
+
+// Construct a query
+Query query = queryFactory.from(Person.class).having("name").eq("Will").toBuilder().build();
+      
+// Execute the query
+List<Person> matches = query.list();
+
+matches.forEach(person -> System.out.printf("Match: %s", person));
+cm.stop();
 	\end{lstlisting}
 \end{frame}
 
