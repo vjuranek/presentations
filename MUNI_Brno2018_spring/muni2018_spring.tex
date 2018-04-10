@@ -29,7 +29,7 @@
 \title{Infinispan}
 \author{Vojtěch Juránek}
 \institute[Red Hat]{JBoss - a division by Red Hat}
-\date{12.~4.~2017, FI MUNI, Brno}
+\date{12.~4.~2018, FI MUNI, Brno}
 
 \newenvironment{mylisting}
 {\begin{list}{}{\setlength{\leftmargin}{1em}}\item\scriptsize\bfseries}
@@ -135,7 +135,7 @@
 	\vspace{0.5cm}
 	Optionally:
 	\begin{lstlisting}[style=Bash]
-		wget http://downloads.jboss.org/infinispan/8.2.4.Final/infinispan-server-8.2.4.Final-bin.zip
+		wget http://downloads.jboss.org/infinispan/9.2.1.Final/infinispan-server-9.2.1.Final-bin.zip
 	\end{lstlisting}
 \end{frame}
 
@@ -149,7 +149,7 @@
 	\begin{itemize}
 		\item Course materials, including this presentation:\\
 		\color{blue}\url{https://developer.jboss.org/wiki/AdvancedJavaEELabFIMUNIJaro2018/}\color{black}
-		\item This presentation (and source code):\\ 
+		\item This presentation (and the source code):\\ 
 		\color{blue}\url{https://github.com/vjuranek/presentations/tree/master/MUNI_Brno2018_spring}\color{black}
 	\end{itemize}
 	}
@@ -238,6 +238,15 @@
 \end{frame}
 
 \begin{frame}
+	\frametitle{Distributed databases}
+	\begin{itemize}
+		\item Good scalability
+		\item Better perfomance
+		\item But also bring a lot of different challenges
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
 	\frametitle{Distributed systems}
 	\begin{figure}
 		\centering
@@ -249,7 +258,7 @@
 
 \begin{frame}
 	\frametitle{Distributed databases}
-	You probably don't want to implement it yourselves, just once example:
+	You probably don't want to implement it yourselves, just once example (read after write/read your writes consistency):
 	\begin{figure}
 		\centering
 		\includegraphics[width=12cm]{./img/read-after-write-consistency.eps}
@@ -279,15 +288,24 @@
 		In-memory = all data is kept in memory \\
 		Grid = too big to kept data on one node, data is distributed across more/many nodes
 	}\color{black}
-	\visible<2,3> {
+	\visible<2> {
 	\begin{itemize}
 	 \item An in-memory distributed data store designed for fast access to large volumes of data and scalability.
-	 \item Commonly a complementary layer to the relational database and the application.
+	 \item Commonly a complementary layer to the relational database or some other persistent data storage, usually as a cache:
 	\end{itemize}
   }
 	\centering
-	\visible<3> {
-	\color{blue}\textbf{Key data grid characteristics:}\color{black}
+	\visible<2> {
+	\begin{figure}
+		\centering
+		\includegraphics[width=7cm]{./img/xkcd_908.eps}
+		\caption{\tiny{Source: Part of \href{http://xkcd.com/908/}{xkcd \#908}}}
+	\end{figure}
+	}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Key data grid characteristics}
 	\begin{itemize}
 	 \item In-memory, distributed caching
 	 \item Elastic and scalable
@@ -296,16 +314,6 @@
 	 \item Processing for streaming data
 	 \item Transaction capabilities
 	\end{itemize}
-	}
-\end{frame}
-
-\begin{frame}
-	\frametitle{The importance of caching}
-	\begin{figure}
-		\centering
-		\includegraphics[width=12cm]{./img/xkcd_908.eps}
-		\caption{\tiny{Source: Part of \href{http://xkcd.com/908/}{xkcd \#908}}}
-	\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -763,6 +771,19 @@ cm.stop();
 	\end{itemize}
 	Python and Ruby clients have only basic functionality.
 \end{frame}
+
+\begin{frame}
+	\frametitle{Management console}
+	\begin{itemize}
+	 \item Easy configuration
+	 \item Monitoring and statistics 
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm]{./img/mgmt-console.eps}
+	\end{figure}
+\end{frame}
+
 
 \begin{frame}
   \frametitle{Some other features - brief and selective list}
