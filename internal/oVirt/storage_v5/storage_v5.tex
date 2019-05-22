@@ -1,0 +1,113 @@
+\documentclass[10pt,utf8]{beamer}
+
+\mode<presentation> {
+%  \usetheme{Boadilla}
+  \usetheme{Madrid}
+%	\usetheme{Fzu}
+  \setbeamercovered{transparent}
+}
+
+\usepackage{palatino}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{colortbl}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+
+\setbeamertemplate{caption}{\raggedright\insertcaption\par} %turn off caption prefix ("Figure")
+
+\title{Storage metadata format V5}
+\author{Vojtech Juranek}
+\institute[Red Hat]{oVirt storage team}
+\date{28.~5.~2019}
+
+
+\begin{document}
+
+\begin{frame}
+ \titlepage
+\end{frame}
+
+\begin{frame}
+	\frametitle{What's in V4}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Why we need V5?}
+	\centering
+	\huge{\textbf{Why we need it?}}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Why we need V5?}
+	\centering
+	\huge{\textbf{4k!}}
+	\normalsize
+	\vspace{1cm}
+	\begin{itemize}
+		\pause
+		\item Volume size is stored in multiples of block size (512b) - cannot work with 4k.
+		\pause
+		\item Need to store block size (and also alignment) for storage domains - needed by sanlock.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{When it will be ready?}
+	\begin{itemize}
+		\item Already implemented, merged and released.
+		\item Storage format V5 is the default storage format since engine \textbf{4.3.3.2}.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{What's new in V5?}
+	\begin{itemize}
+		\item 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{File domain metadata}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Demo}
+	\centering
+	\huge{\textbf{File domain metadata}}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Block domain metadata}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Demo}
+	\centering
+	\huge{\textbf{Block domain metadata}}
+\end{frame}
+
+\begin{frame}
+	\frametitle{File volume metadata}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Demo}
+	\centering
+	\huge{\textbf{File volume metadata}}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Block volume metadata}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Demo}
+	\centering
+	\huge{\textbf{Block volume metadata}}
+\end{frame}
+
+\end{document}
