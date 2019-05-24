@@ -15,24 +15,47 @@
 \usepackage{colortbl}
 \usepackage{amsmath}
 \usepackage{hyperref}
+\usepackage{listings}
+\usepackage{fancyvrb}
 
-
-\setbeamertemplate{caption}{\raggedright\insertcaption\par} %turn off caption prefix ("Figure")
+%\setbeamertemplate{caption}{\raggedright\insertcaption\par} %turn off caption prefix ("Figure")
 
 \title{Storage metadata format V5}
 \author{Vojtech Juranek}
 \institute[Red Hat]{oVirt storage team}
 \date{28.~5.~2019}
 
+\lstdefinestyle{Bash}{
+	basicstyle          = \small\ttfamily,
+	language            = Bash,
+	numbers             = left,
+	numberstyle         = \tiny,
+	stepnumber          = 1,
+	numbersep           = 5pt,
+	backgroundcolor     = \color{white},
+	showspaces          = false,
+	showstringspaces    = false,
+	showtabs            = false,
+	frame               = single,
+	tabsize             = 2,
+	captionpos          = b,
+	breaklines          = true,
+	breakatwhitespace   = false,
+	morestring          = [b]",
+	stringstyle         = \color{blue},
+	keywordstyle        = \color{magenta},
+	commentstyle        = \color{gray},
+	identifierstyle     = \color{black},
+	moredelim           = **[is][\bfseries]{`}{`},
+	moredelim           = **[is][\color{magenta}]{|}{|}, 
+	fancyvrb            = true,
+}
+
 
 \begin{document}
 
 \begin{frame}
  \titlepage
-\end{frame}
-
-\begin{frame}
-	\frametitle{What's in V4}
 \end{frame}
 
 \begin{frame}
@@ -48,66 +71,150 @@
 	\normalsize
 	\vspace{1cm}
 	\begin{itemize}
-		\pause
+		%\pause
 		\item Volume size is stored in multiples of block size (512b) - cannot work with 4k.
-		\pause
+		%\pause
 		\item Need to store block size (and also alignment) for storage domains - needed by sanlock.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
+	\frametitle{What has changed in V5}
+	\centering
+	\Large{\textbf{Domain metadata}}
+	\normalsize
+	\vspace{0.5cm}
+	\begin{itemize}
+		\item Added \textbf{ALIGNMENT} (alignment of sanlock in bytes) and \textbf{BLOCK\_SIZE} (device block size in bytes).
+		\item Removed \textbf{LOGBLKSIZE} and \textbf{PHYBLKSIZE}.
+	\end{itemize}
+	
+	\vspace{1cm}
+	
+	\centering
+	\Large{\textbf{Volume metadata}}
+	\normalsize
+	\vspace{0.5cm}
+	\begin{itemize}
+		\item \textbf{SIZE} (size in blocks) replaced by \textbf{CAP} (size in bytes).
+		\item Removed unused \textbf{MTIME} and \textbf{POOL\_UUID}.
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}
 	\frametitle{When it will be ready?}
 	\begin{itemize}
-		\item Already implemented, merged and released.
+		\item Already implemented, merged and released in vdsm \textbf{4.30.10}.
 		\item Storage format V5 is the default storage format since engine \textbf{4.3.3.2}.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}
-	\frametitle{What's new in V5?}
-	\begin{itemize}
-		\item 
-	\end{itemize}
+\begin{frame}[fragile]
+	\frametitle{How to read file domain metadata}
+	\begin{lstlisting}[style=Bash]
+		cat /path/to/sd-id/dom_md/metadata
+	\end{lstlisting}
+	\begin{lstlisting}[style=Bash]
+$cat /rhev/data-center/bec2943a-722f-11e9-8565-525400f7bf49/696be7a4-fe13-4cca-8023-1a1997080176/dom_md/metadata
+ALIGNMENT=1048576
+BLOCK_SIZE=512
+CLASS=Data
+DESCRIPTION=node-nfs
+[...]
+SDUUID=696be7a4-fe13-4cca-8023-1a1997080176
+TYPE=NFS
+VERSION=5
+_SHA_CKSUM=c13c28b82fc236463d2232649912c291a062942a
+	\end{lstlisting}
 \end{frame}
 
 \begin{frame}
-	\frametitle{File domain metadata}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Demo}
+	\frametitle{How to read file domain metadata}
 	\centering
-	\huge{\textbf{File domain metadata}}
+	\huge{\textbf{Demo}}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{How to read block domain metadata}
+	\begin{lstlisting}[style=Bash]
+		vgs -o vg_tags sd-id
+	\end{lstlisting}
+	\begin{lstlisting}[style=Bash]
+$vgs -o vg_tags e455cfc6-a3ac-4ab8-b288-a2254f9226a0
+VG Tags
+MDT_ALIGNMENT=1048576,MDT_BLOCK_SIZE=512,MDT_CLASS=Data,MDT_DESCRIPTION=iscsi-tpg1,MDT_IOOPTIMEOUTSEC=10,MDT_LEASERETRIES=3,MDT_LEASETIMESEC=60,MDT_LOCKPOLICY=,MDT_LOCKRENEWALINTERVALSEC=5,MDT_MASTER_VERSION=872,MDT_POOL_DESCRIPTION=Default,MDT_POOL_DOMAINS=23393f78-d910-4966-a7d0-37826e04977f:Active&44&e455cfc6-a3ac-4ab8-b288-a2254f9226a0:Active&44&696be7a4-fe13-4cca-8023-1a1997080176:Active,MDT_POOL_SPM_ID=-1,MDT_POOL_SPM_LVER=-1,MDT_POOL_UUID=bec2943a-722f-11e9-8565-525400f7bf49,MDT_PV0=pv:36001405cbd6486572014764a986277c2&44&uuid:apx49E-pxmn-bkum-ugkd-JTw5-Rdfs-NUdWQV&44&pestart:0&44&pecount:77&44&mapoffset:0,MDT_ROLE=Regular,MDT_SDUUID=e455cfc6-a3ac-4ab8-b288-a2254f9226a0,MDT_TYPE=ISCSI,MDT_VERSION=5,MDT_VGUUID=o7Qvsi-2FGs-3d18-0eao-hOG4-NzuH-rlcysK,MDT__SHA_CKSUM=ee26d741b70a77e98d1ab34183d1a69e9b6298d4,RHAT_storage_domain
+	\end{lstlisting}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Block domain metadata}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Demo}
+  \frametitle{How to read block domain metadata}
 	\centering
-	\huge{\textbf{Block domain metadata}}
+	\huge{\textbf{Demo}}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{How to read file volume metadata}
+	\begin{lstlisting}[style=Bash]
+		cat /path/to/sd-id/images/img-id/vol-id.meta
+	\end{lstlisting}
+\begin{lstlisting}[style=Bash]
+cat /rhev/data-center/bec2943a-722f-11e9-8565-525400f7bf49/696be7a4-fe13-4cca-8023-1a1997080176/images/26b9d4ed-99a1-48ab-99fe-fb6917d55693/9c618bb3-1302-4b31-8f35-48856c6b3b9d.meta 
+CAP=3221225472
+CTIME=1557741257
+DESCRIPTION=None
+DISKTYPE=DATA
+DOMAIN=696be7a4-fe13-4cca-8023-1a1997080176
+FORMAT=RAW
+GEN=1
+IMAGE=26b9d4ed-99a1-48ab-99fe-fb6917d55693
+LEGALITY=LEGAL
+PUUID=00000000-0000-0000-0000-000000000000
+TYPE=SPARSE
+VOLTYPE=INTERNAL
+EOF
+	\end{lstlisting}
 \end{frame}
 
 \begin{frame}
-	\frametitle{File volume metadata}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Demo}
+  \frametitle{How to read file volume metadata}
 	\centering
-	\huge{\textbf{File volume metadata}}
+	\huge{\textbf{Demo}}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 	\frametitle{Block volume metadata}
+	\begin{lstlisting}[style=Bash]
+		lvs -o tags sd-id/vol-id
+		export OFFSET=$((1024 * 1024 + 4 * 8192))
+		dd if=/dev/sd-id/metadata \
+		bs=512 \
+    count=1 \
+    skip=$OFFSET \
+    iflag=direct,skip_bytes
+	\end{lstlisting}
+	\begin{lstlisting}[style=Bash]
+dd if=/dev/e455cfc6-a3ac-4ab8-b288-a2254f9226a0/metadata bs=512 count=1 skip=$OFFSET iflag=direct,skip_bytes
+CAP=1073741824
+CTIME=1558691413
+DESCRIPTION={"DiskAlias":"block-disk","DiskDescription":""}
+DISKTYPE=DATA
+DOMAIN=e455cfc6-a3ac-4ab8-b288-a2254f9226a0
+FORMAT=COW
+GEN=0
+IMAGE=95bd6c1c-61a6-49b1-9d02-13d0e1c42e8d
+LEGALITY=LEGAL
+PUUID=00000000-0000-0000-0000-000000000000
+TYPE=SPARSE
+VOLTYPE=LEAF
+EOF
+	\end{lstlisting}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Demo}
+  \frametitle{How to read block volume metadata}
 	\centering
-	\huge{\textbf{Block volume metadata}}
+	\huge{\textbf{Demo}}
 \end{frame}
 
 \end{document}
