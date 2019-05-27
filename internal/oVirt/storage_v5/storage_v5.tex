@@ -202,19 +202,15 @@ cat /rhev/data-center/bec2943a-722f-11e9-8565-525400f7bf49/696be7a4-fe13-4cca-80
 	\begin{lstlisting}[style=Bash]
 export SLOT=$(!lvs -o tags! sd-id/vol-id | !cut! -s -d , -f 2 | !cut! -d _ -f 2)
 export OFFSET=$((1024 * 1024 + $SLOT * 8192))
-!dd! if=`/dev`/sd-id/`metadata` \
-	 bs=512 \
-	 count=1 \
-	 skip=$OFFSET \
-	 iflag=direct,skip_bytes
+!dd! if=`/dev`/sd-id/`metadata` bs=512 count=1 \
+	 skip=$OFFSET iflag=direct,skip_bytes
 	\end{lstlisting}
 
-	\vspace{0.5cm}
 	e.g.
-	\vspace{0.5cm}
-
 
 	\begin{lstlisting}[style=Bash]
+export SLOT=$(!lvs -o tags! e455cfc6-a3ac-4ab8-b288-a2254f9226a0/31649514-2b8d-41c0-a7a6-08104e485aea | !cut! -s -d , -f 2 | !cut! -d _ -f 2)
+export OFFSET=$((1024 * 1024 + $SLOT * 8192))
 !dd! if=/dev/e455cfc6-a3ac-4ab8-b288-a2254f9226a0/metadata bs=512 count=1 skip=$OFFSET iflag=direct,skip_bytes
 	\end{lstlisting}
 \end{frame}
