@@ -99,6 +99,18 @@
 \end{frame}
 
 \begin{frame}
+ \frametitle{Data consistency}
+ \begin{itemize}
+    \item Dedicated (external) lock manager.
+    \item What about co-locate locks with the data protected by the locks:
+    \begin{itemize}
+     \item Accessing the locks together with accessing the data itself.
+    \end{itemize}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}
     \frametitle{Refresh: Consensus algorithm}
     \centering
     \textbf{Algorithm has to satisfy 2 conditions:}
@@ -224,11 +236,18 @@
 
 \begin{frame}
     \frametitle{Broadcasting a value}
-    
     \centering
-    \textbf{If \texttt{p} learns that some other value was committed during the process $\rightarrow$ abort and output committed value.}
+    If \texttt{p} learns that some other value was committed during the process $\rightarrow$ abort and output committed value.
 \end{frame}
 
+
+\begin{frame}
+ \frametitle{Unsolved problems}
+ \begin{itemize}
+  \item How to add processors.
+  \item How to store location/mapping of processors on the disks.
+ \end{itemize}
+\end{frame}
 
 \begin{frame}
     \frametitle{Delta leases}
@@ -236,6 +255,63 @@
         \centering
         \includegraphics[height=5cm]{./img/delta-leases-paper.eps}
     \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Known delay model}
+    \begin{itemize}
+     \item In the following we will consider only known delay model (system is stable).
+     \item Works also for eventually know delay model (exists global stabilization time after which system is stable).
+    \end{itemize}
+    
+    \vspace{1cm}
+    
+    \centering
+    \textbf{The system is stable when:}
+    \begin{itemize}
+     \item the process' clock drift with respect to the real time is bounded by a known constant $\rho$ (in the following is assumed $\rho=0$),
+     \item the time it takes to correct process to complete its access to do some operation on shared memory object (typically read/write) is strictly less than a known bound $\delta$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{$\Delta$-Lease life cycle}
+    \begin{figure}
+        \centering
+        \includegraphics[height=6cm]{./img/delta-lease-life-cycle.eps}
+    \end{figure}
+    
+    \centering
+    \textbf{Once acquired, lock is hold for time period $\Delta$.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{$\Delta$-Lease safety and liveness}
+    \begin{itemize}
+     \item Safety: At most one process is in the Hold state.
+     \item Liveness: 
+     \begin{itemize}
+        \item If no process is in the Hold state, and some correct process is int he Try state, then at some later point some correct process enters the Hold state.
+        \item At any point in an execution, if a correct process \texttt{i} is in the Release state, then at some later point process \texttt{i} enters the Free state.
+     \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{$\Delta$-Lease Implementation}
+    \begin{figure}
+        \centering
+        \includegraphics[height=7cm]{./img/delta-lease-alg.eps}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{$\Delta$-Lease}
+    \begin{itemize}
+     \item Algorithm can be easily extended for eventually known delay model.
+     \item We can add lease renewals.
+     \item Leases can be used, besides locking, e.g. to a leader election.
+    \end{itemize}
 \end{frame}
 
 \end{document}
