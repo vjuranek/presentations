@@ -314,4 +314,63 @@
     \end{itemize}
 \end{frame}
 
+
+\begin{frame}
+    \frametitle{sanlock}
+    \begin{itemize}
+     \item \color{blue}\url{https://pagure.io/sanlock}\color{black}
+     \item Shared storage lock manager.
+     \item Build on top of Disk Paxos and $\Delta$-Leases.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{sanlock $\Delta$-Leases}
+    \begin{itemize}
+     \item $\Delta$-Leases are slow.
+     \item For sanlock internal usage only.
+     \item For keeping host ID
+     \begin{itemize}
+        \item Prevents two hosts to have same ID.
+        \item Lease renewal is used also for checking is host is alive.
+     \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{sanlock Disk Paxos leases}
+    \begin{itemize}
+     \item Fast to acquire.
+     \item Provided to application to as general purpose application leases.
+     \item Host IDs are used as Paxos leases owners.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Summary}
+    \begin{itemize}
+     \item For locking the data on a shared storage lock located with data can be better solution then dedicated lock manager.
+     \item There are various algorithms for storage-centric locks, e.g. Disk Paxos, a modification of classical Paxos algorithm.
+     \item Disk Paxos itself is not sufficient for full implementation of shared disk locks and has to be used with some other algorithm, e.g. $\Delta$-Lease.
+     \item Implementation of this approach can be found e.g. in sanlock project.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Questions?}
+    \centering
+    \textbf{\Huge{Questions?}}
+    
+    \vspace{1cm}
+    
+    \centering
+    \textbf{\dots read Disk Paxos and $\Delta$-Lease papers}:
+    \vspace{0.5cm}
+    \begin{itemize}
+     \item \small\color{blue}\href{http://lamport.azurewebsites.net/pubs/disk-paxos-disc.pdf}{E. Gafni, L. Lamport, Disk Paxos}\color{black}
+     \item \color{blue}\href{https://groups.csail.mit.edu/tds/papers/Chockler/TR934.ps}{G. Chockler, D. Malkhi, Light-Weight Leases for Storage-Centric Coordination}\color{black}
+    \end{itemize}
+
+\end{frame}
+    
 \end{document}
