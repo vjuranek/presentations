@@ -20,8 +20,8 @@
 
 \setbeamertemplate{caption}{\raggedright\insertcaption\par} %turn off caption prefix ("Figure")
 
-\title{Disk Paxos and Delta Leases}
-\author{Vojtech Juranek}
+\title{Disk Paxos and $\Delta$-Leases}
+\author{Vojtěch Juránek}
 \institute[Red Hat]{Red Hat}
 \date{22.~10.~2019}
 
@@ -250,7 +250,7 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Delta leases}
+    \frametitle{$\Delta$-Lease}
     \begin{figure}
         \centering
         \includegraphics[height=5cm]{./img/delta-leases-paper.eps}
@@ -349,10 +349,10 @@
 \begin{frame}
     \frametitle{Summary}
     \begin{itemize}
-     \item For locking the data on a shared storage lock located with data can be better solution then dedicated lock manager.
+     \item For locking the data on a shared storage lock located with data can be better solution than dedicated lock manager.
      \item There are various algorithms for storage-centric locks, e.g. Disk Paxos, a modification of classical Paxos algorithm.
      \item Disk Paxos itself is not sufficient for full implementation of shared disk locks and has to be used with some other algorithm, e.g. $\Delta$-Lease.
-     \item Implementation of this approach can be found e.g. in sanlock project.
+     \item Implementation of this approach can be found in sanlock project.
     \end{itemize}
 \end{frame}
 
