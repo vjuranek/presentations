@@ -152,9 +152,9 @@ probe begin {
 \begin{frame}
     \frametitle{Basics of systemtap scripting language}
     \begin{itemize}
-        \item \texttt{if (EXP) STATEMENT else STATEMENT} - if/else statement.
-        \item \texttt{while(EXP) STATEMENT} - while loop.
-        \item \texttt{for(A; B; C) STATEMENT} - for loop.
+        \item \texttt{if (COND) STATEMENT else STATEMENT} - if/else statement.
+        \item \texttt{while(COND) STATEMENT} - while loop.
+        \item \texttt{for(INIT; COND; INC) STATEMENT} - for loop.
         \item Loops can use \texttt{break} and \texttt{continue}.
     \end{itemize}
 \end{frame}
@@ -175,9 +175,11 @@ probe begin {
 	\begin{itemize}
 		\item \color{blue}\href{http://sourceware.org/systemtap/tutorial.pdf}{systemtap tutorial} \color{black}(presentation is based on this tutorial)
 		\item \color{blue}\href{https://sourceware.org/systemtap/SystemTap_Beginners_Guide/}{systemtap beginner guide}
+		\item \href{https://sourceware.org/systemtap/examples/}{systemtap examples}
+		\item \href{https://sourceware.org/systemtap/langref/}{systemtap language reference}
+		\item \href{https://sourceware.org/systemtap/tapsets/}{tapsets}
 		\item \href{https://access.redhat.com/documentation/en-us/red\_hat\_enterprise_linux/7/html-single/systemtap\_beginners\_guide/index}{systemtap beginner guide, RHEL 7 documentation}
 		\item \href{https://access.redhat.com/documentation/en-us/red_hat_developer\_toolset/8/html/user\_guide/chap-systemtap}{systemtap chapet in RHEL 8 User Guide}
-		\item \href{https://sourceware.org/systemtap/examples/}{systemtap examples}
 	\end{itemize}
 \end{frame}
 
