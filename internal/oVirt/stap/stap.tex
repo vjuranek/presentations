@@ -20,7 +20,7 @@
 
 %\setbeamertemplate{caption}{\raggedright\insertcaption\par} %turn off caption prefix ("Figure")
 
-\title{Intorduction to systemtap}
+\title{Introduction to systemtap}
 \author{Vojtěch Juránek}
 \institute[Red Hat]{oVirt storage team}
 \date{3.~12.~2019}
@@ -59,11 +59,19 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{What is systemtap}
+	\frametitle{What is }
+	\begin{figure}
+            \centering
+            \includegraphics[height=5cm]{./img/stap.eps}
+        \end{figure}
+	
+	\hspace{1cm}
+	
 	\begin{itemize}
 		\item Tool for probing and gathering information about running Linux system.
 		\item Also scripting language for writing systemtap probes.
 	\end{itemize}
+
 \end{frame}
 
 \begin{frame}
@@ -91,20 +99,86 @@ probe begin {
         \item And run it: \texttt{stap hello.stp}
         \item You can use also shebang line in the script and make it executable: \texttt{\#!/usr/bin/env stap}
     \end{itemize}
-
 \end{frame}
 
+\begin{frame}
+    \frametitle{stapprobes}
+    Probe points - events, which trigger the probe. Many of them, such as:
+    \begin{itemize}
+        \item \texttt{begin} - start of systemtap session,
+        \item \texttt{end} - start of systemtap session,
+        \item \texttt{kernel.function("\$FUNC\_NAME")} - entry to the function named \texttt{\$FUN\_NAME},
+        \item \texttt{syscall.\$SYS\_CALL} - entry to the system call \texttt{\$SYS\_CALL},
+        \item \texttt{syscall.\$SYS\_CALL.return} - return from the system call \texttt{\$SYS\_CALL},
+        \item \texttt{time.ms(\$MS)} - triggers every \texttt{\$MS} milliseconds.
+    \end{itemize}
+    
+    \hspace{0.5cm}
+    
+    There are many of them, features like support of wildcards, etc., see \texttt{man stapprobes} for more.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Contextual functions}
+    Again, many of them, few examples:
+    \begin{itemize}
+        \item \texttt{pid()} - process ID of current thread,
+        \item \texttt{execname()} - name of current process,
+        \item \texttt{pp()} - description of probe point being processed,
+        \item \texttt{ppfunc()} - function in which the probe was placed,
+        \item \texttt{\$\$vars} - list of local variables,
+        \item \texttt{print\_backtrace()} - print kernel trace,
+        \item \texttt{print\_ubacktrace()} - print user-space trace.
+    \end{itemize}
+    
+    \hspace{0.5cm}
+    
+    See \texttt{man} pages of  \texttt{apropos function::* } for more details.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Basics of systemtap scripting language}
+    \begin{itemize}
+        \item Variables can be just assigned - will be declared and initialized automatically.
+        \item Types are inferred automatically.
+        \item Variables are by default local.
+        \item Global variables can be declared anywhere in the script using keyword \texttt{global}.
+        \item Global variable are accessible by all probes.
+        \item Target variable - allow to access context information, e.g. \texttt{\$\$vars} ( list of local variables).
+    \end{itemize}
+
+\end{frame}
+    
+\begin{frame}
+    \frametitle{Basics of systemtap scripting language}
+    \begin{itemize}
+        \item \texttt{if (EXP) STATEMENT else STATEMENT} - if/else statement.
+        \item \texttt{while(EXP) STATEMENT} - while loop.
+        \item \texttt{for(A; B; C) STATEMENT} - for loop.
+        \item Loops can use \texttt{break} and \texttt{continue}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Basics of systemtap scripting language}
+    \begin{itemize}
+        \item Custom functions (\texttt{function} keyword).
+        \item Arrays - must be declared as global.
+        \item Support for aggregates, e.g. \texttt{@sum}, \texttt{@avg}, \texttt{@count} etc.
+        \item Support for creating custom libraries (tapsets).
+        \item Can even embed C code (must be run in "guru" mode).
+    \end{itemize}
+\end{frame}
 
 \begin{frame}
 	\frametitle{Resources}
 	\begin{itemize}
-		\item \color{blue}\href{http://sourceware.org/systemtap/tutorial.pdf}{systemtap tutorial}
-		\item \href{https://sourceware.org/systemtap/SystemTap_Beginners_Guide/}{systemtap beginner guide}
+		\item \color{blue}\href{http://sourceware.org/systemtap/tutorial.pdf}{systemtap tutorial} \color{black}(presentation is based on this tutorial)
+		\item \color{blue}\href{https://sourceware.org/systemtap/SystemTap_Beginners_Guide/}{systemtap beginner guide}
 		\item \href{https://access.redhat.com/documentation/en-us/red\_hat\_enterprise_linux/7/html-single/systemtap\_beginners\_guide/index}{systemtap beginner guide, RHEL 7 documentation}
 		\item \href{https://access.redhat.com/documentation/en-us/red_hat_developer\_toolset/8/html/user\_guide/chap-systemtap}{systemtap chapet in RHEL 8 User Guide}
 		\item \href{https://sourceware.org/systemtap/examples/}{systemtap examples}
 	\end{itemize}
-	
 \end{frame}
 
 \end{document}
