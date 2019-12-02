@@ -1,0 +1,110 @@
+\documentclass[10pt,utf8]{beamer}
+
+\mode<presentation> {
+%  \usetheme{Boadilla}
+  \usetheme{Madrid}
+%	\usetheme{Fzu}
+  \setbeamercovered{transparent}
+}
+
+\usepackage{palatino}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{colortbl}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{fancyvrb}
+
+%\setbeamertemplate{caption}{\raggedright\insertcaption\par} %turn off caption prefix ("Figure")
+
+\title{Intorduction to systemtap}
+\author{Vojtěch Juránek}
+\institute[Red Hat]{oVirt storage team}
+\date{3.~12.~2019}
+
+\lstdefinestyle{Bash}{
+	basicstyle          = \large\ttfamily,
+	language            = Bash,
+	numbers             = left,
+	numberstyle         = \small,
+	stepnumber          = 1,
+	numbersep           = 5pt,
+	backgroundcolor     = \color{white},
+	showspaces          = false,
+	showstringspaces    = false,
+	showtabs            = false,
+	frame               = single,
+	tabsize             = 2,
+	captionpos          = b,
+	breaklines          = true,
+	breakatwhitespace   = false,
+	morestring          = [b]",
+	stringstyle         = \color{blue},
+	keywordstyle        = \color{magenta},
+	commentstyle        = \color{gray},
+	identifierstyle     = \color{black},
+	moredelim           = **[is][\bfseries]{`}{`},
+	moredelim           = **[is][\color{magenta}]{!}{!}, 
+	fancyvrb            = true,
+}
+
+
+\begin{document}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}
+	\frametitle{What is systemtap}
+	\begin{itemize}
+		\item Tool for probing and gathering information about running Linux system.
+		\item Also scripting language for writing systemtap probes.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{How it works}
+	\begin{itemize}
+		\item Probe script is translated into C.
+		\item C program is compiled into loadable kernel module.
+		\item Loaded into the kernel at the beginning of the script.
+		\item Unloaded from the kernel once script finishes.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Setup}
+    \begin{itemize}
+        \item Install \texttt{systemtap} package: \texttt{dnf install systemtap}
+        \item Eventually install requested version of \texttt{kernel-devel} package if systemtap asks for it.
+        \item Create "hello world" script  \texttt{hello.stp}:
+            \begin{lstlisting}[style=Bash]
+probe begin {
+  printf("Hello world!\n")
+  exit()
+}
+            \end{lstlisting}
+        \item And run it: \texttt{stap hello.stp}
+        \item You can use also shebang line in the script and make it executable: \texttt{\#!/usr/bin/env stap}
+    \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Resources}
+	\begin{itemize}
+		\item \color{blue}\href{http://sourceware.org/systemtap/tutorial.pdf}{systemtap tutorial}
+		\item \href{https://sourceware.org/systemtap/SystemTap_Beginners_Guide/}{systemtap beginner guide}
+		\item \href{https://access.redhat.com/documentation/en-us/red\_hat\_enterprise_linux/7/html-single/systemtap\_beginners\_guide/index}{systemtap beginner guide, RHEL 7 documentation}
+		\item \href{https://access.redhat.com/documentation/en-us/red_hat_developer\_toolset/8/html/user\_guide/chap-systemtap}{systemtap chapet in RHEL 8 User Guide}
+		\item \href{https://sourceware.org/systemtap/examples/}{systemtap examples}
+	\end{itemize}
+	
+\end{frame}
+
+\end{document}
