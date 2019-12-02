@@ -183,4 +183,44 @@ probe begin {
 	\end{itemize}
 \end{frame}
 
+\begin{frame}
+	\centering
+	\huge{\textbf{Demo scripts}}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{open\_sys.stap}
+    \begin{lstlisting}[style=Bash]
+probe syscall.open {
+  if (substr(filename, 1, 4) == "/sys") {
+    printf("%s(%d) open (%s)\n", execname(), pid(), argstr)
+  }
+}
+
+probe timer.ms(5000){
+  exit()
+}
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{lvm.stap}
+    \begin{lstlisting}[style=Bash]
+global pid = -1
+probe process("lvm").begin {
+  pid = pid()
+  printf("Begin: %s pid=%d args=%s\n", execname(), pid, cmdline_args(0, -1, " "))
+}
+
+probe process("lvm").end {
+  printf("End: %s pid=%d\n", execname(), pid())
+}
+
+probe syscall.open {
+  if (pid() == pid)
+    printf("%s(%d) open (%s)\n", execname(), pid(), argstr)
+}
+    \end{lstlisting}
+\end{frame}
+
 \end{document}
