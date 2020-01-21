@@ -20,7 +20,7 @@
 
 \setbeamertemplate{caption}{\raggedright\insertcaption\par} %turn off caption prefix ("Figure")
 
-\title{sanlock}
+\title{Ideas behind sanlock}
 \author{Vojtěch Juránek}
 \institute[Red Hat]{Red Hat}
 \date{25.~1.~2020, DevConf.CZ, Brno}
@@ -59,30 +59,10 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Network attached storage}
-    \begin{figure}
-        \centering
-        \includegraphics[height=5cm]{./img/disk-paxos.eps}
-        \caption{\tiny{Source: \url{https://www.linuxjournal.com/content/high-availability-storage-ha-lvm}}}
-    \end{figure}
-\end{frame}
-
-\begin{frame}
     \frametitle{Storage area network}
     \begin{figure}
         \centering
         \includegraphics[height=7cm]{./img/san.eps}
-        \caption{\tiny{Source: \url{https://www.ibm.com/developerworks/community/wikis/
-        %\caption{\tiny{Source: \url{https://www.ibm.com/developerworks/community/wikis/home?lang=en\#!/wiki/IBM\%20Technology\%20Made\%20Simple/page/Storage\%20Virtualization\%20Technology
-        }}}
-    \end{figure}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Storage virtualization}
-    \begin{figure}
-        \centering
-        \includegraphics[height=7cm]{./img/san-svc.eps}
         \caption{\tiny{Source: \url{https://www.ibm.com/developerworks/community/wikis/
         %\caption{\tiny{Source: \url{https://www.ibm.com/developerworks/community/wikis/home?lang=en\#!/wiki/IBM\%20Technology\%20Made\%20Simple/page/Storage\%20Virtualization\%20Technology
         }}}
@@ -100,36 +80,39 @@
 
 \begin{frame}
  \frametitle{Data consistency}
- \begin{itemize}
-    \item Dedicated (external) lock manager.
-    \item What about co-locate locks with the data protected by the locks:
-    \begin{itemize}
-     \item Accessing the locks together with accessing the data itself.
-    \end{itemize}
- \end{itemize}
+ \begin{figure}
+    \centering
+    \includegraphics[height=5cm]{./img/disk-paxos.eps}
+    \caption{\tiny{Source: \url{https://www.linuxjournal.com/content/high-availability-storage-ha-lvm}}}
+ \end{figure}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Data consistency}
+ \centering
+ \Large{Dedicated (external) lock manager:}
+ \begin{figure}
+    \centering
+    \includegraphics[height=6cm]{./img/san-svc.eps}
+    \caption{\tiny{Source: \url{https://www.ibm.com/developerworks/community/wikis/
+    %\caption{\tiny{Source: \url{https://www.ibm.com/developerworks/community/wikis/home?lang=en\#!/wiki/IBM\%20Technology\%20Made\%20Simple/page/Storage\%20Virtualization\%20Technology
+    }}}
+ \end{figure}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Data consistency}
+ \centering
+ \Large{What about co-locate locks with the data and access the locks together with accessing the data itself.}
 \end{frame}
 
 
 \begin{frame}
-    \frametitle{Refresh: Consensus algorithm}
-    \centering
-    \textbf{Algorithm has to satisfy 2 conditions:}
-    \vspace{0.5cm}
+    \frametitle{sanlock}
     \begin{itemize}
-     \item safety (consistency)
-     \item liveness (non-blocking)
-    \end{itemize}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Refresh: Classic Paxos}
-    \centering
-    \textbf{3-phase commit protocol called Synod:}
-    \vspace{0.5cm}
-    \begin{itemize}
-     \item voting
-     \item prepare to commit (pre-commit)
-     \item commit
+     \item \color{blue}\url{https://pagure.io/sanlock}\color{black}
+     \item Shared storage lock manager.
+     \item Build on top of Disk Paxos and $\Delta$-Leases algorithms.
     \end{itemize}
 \end{frame}
 
@@ -153,24 +136,13 @@
 \begin{frame}
     \frametitle{Disk Paxos}
     \centering
-    \textbf{Two main phases:}
-    \vspace{0.5cm}
-    \begin{itemize}
-     \item proposing a value
-     \item preparing the commit of a value
-    \end{itemize}
-\end{frame}
-
-
-\begin{frame}
-    \frametitle{Disk Paxos}
-    \centering
     \textbf{In whole algorithm we assume reading and writing are atomic operations.}\\
     \vspace{1cm}
     
     \begin{itemize}
+     \item Assume we have \texttt{m} disks \texttt{d} and \texttt{n} processors (computers) \texttt{p}.
      \item Each processor has an assigned block on each disk.
-     \item Stores following structure \texttt{dblock[p]}:
+     \item Each processor stores on assigned block on each disk following structure \texttt{dblock[p]}:
      \begin{itemize}
         \item \texttt{mbal} - ballot number
         \item \texttt{bal} - largest ballot number for which \texttt{p} reached preparing commit phase
@@ -269,42 +241,16 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Known delay model}
-    \begin{itemize}
-     \item In the following we will consider only known delay model (system is stable).
-     \item Works also for eventually know delay model (exists global stabilization time after which system is stable).
-    \end{itemize}
-    
-    \vspace{1cm}
-    
-    \centering
-    \textbf{The system is stable when:}
-    \begin{itemize}
-     \item the process' clock drift with respect to the real time is bounded by a known constant $\rho$ (in the following is assumed $\rho=0$),
-     \item the time it takes to correct process to complete its access to do some operation on shared memory object (typically read/write) is strictly less than a known bound $\delta$.
-    \end{itemize}
-\end{frame}
-
-\begin{frame}
     \frametitle{$\Delta$-Lease life cycle}
     \begin{figure}
         \centering
-        \includegraphics[height=6cm]{./img/delta-lease-life-cycle.eps}
+        \includegraphics[height=5cm]{./img/delta-lease-life-cycle.eps}
     \end{figure}
     
     \centering
-    \textbf{Once acquired, lock is hold for time period $\Delta$.}
-\end{frame}
-
-\begin{frame}
-    \frametitle{$\Delta$-Lease safety and liveness}
     \begin{itemize}
-     \item Safety: At most one process is in the Hold state.
-     \item Liveness: 
-     \begin{itemize}
-        \item If no process is in the Hold state, and some correct process is int he Try state, then at some later point some correct process enters the Hold state.
-        \item At any point in an execution, if a correct process \texttt{i} is in the Release state, then at some later point process \texttt{i} enters the Free state.
-     \end{itemize}
+     \item Once acquired, lock is hold for time period $\Delta$.
+     \item The time it takes for correct process to complete its access to do some operation on shared memory object (typically read/write) is strictly less than a known bound $\delta$ (known delay model).
     \end{itemize}
 \end{frame}
 
@@ -314,25 +260,6 @@
         \centering
         \includegraphics[height=7cm]{./img/delta-lease-alg.eps}
     \end{figure}
-\end{frame}
-
-\begin{frame}
-    \frametitle{$\Delta$-Lease}
-    \begin{itemize}
-     \item Algorithm can be easily extended for eventually known delay model.
-     \item We can add lease renewals.
-     \item Leases can be used, besides locking, e.g. to a leader election.
-    \end{itemize}
-\end{frame}
-
-
-\begin{frame}
-    \frametitle{sanlock}
-    \begin{itemize}
-     \item \color{blue}\url{https://pagure.io/sanlock}\color{black}
-     \item Shared storage lock manager.
-     \item Build on top of Disk Paxos and $\Delta$-Leases.
-    \end{itemize}
 \end{frame}
 
 \begin{frame}
