@@ -140,7 +140,7 @@
     \vspace{1cm}
     
     \begin{itemize}
-     \item Assume we have \texttt{m} disks \texttt{d} and \texttt{n} processors (computers) \texttt{p}.
+     \item Assume we have \texttt{m} disks \texttt{d} and \texttt{n} processors (computers/hosts) \texttt{p}.
      \item Each processor has an assigned block on each disk.
      \item Each processor stores on assigned block on each disk following structure \texttt{dblock[p]}:
      \begin{itemize}
@@ -272,6 +272,11 @@
         \item Prevents two hosts to have same ID.
         \item Lease renewal is used also for checking is host is alive.
      \end{itemize}
+     \item In sanlock it's called lockspace.
+     \item Lockspace is 1MB.
+     \item Max hosts is 2000 (for block size 512B)
+     \item sanlock renews delta leases every 20 seconds (by default) by writing a new timestamp into the delta lease sector.
+
     \end{itemize}
 \end{frame}
 
@@ -281,8 +286,21 @@
      \item Fast to acquire.
      \item Provided to application to as general purpose application leases.
      \item Host IDs are used as Paxos leases owners.
+     \item Lease is 1MB.
+     \item Lease for one resource.
     \end{itemize}
 \end{frame}
+
+\begin{frame}
+ \frametitle{Using sanlock}
+ Application which wants to use sanlock need to:
+ \begin{itemize}
+  \item initialize lockspace at the beginning,
+  \item join the lockspace when it starts,
+  \item acquire/release lease for a resource.
+ \end{itemize}
+\end{frame}
+
 
 \begin{frame}
     \frametitle{Summary}
