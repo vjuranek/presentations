@@ -20,7 +20,7 @@
 
 \setbeamertemplate{caption}{\raggedright\insertcaption\par} %turn off caption prefix ("Figure")
 
-\title{Ideas behind sanlock}
+\title{Protecting your resources with sanlock}
 \author{Vojtěch Juránek}
 \institute[Red Hat]{Red Hat}
 \date{25.~1.~2020, DevConf.CZ, Brno}
@@ -59,28 +59,19 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Storage area network}
-    \begin{figure}
-        \centering
-        \includegraphics[height=7cm]{./img/san.eps}
-        \caption{\tiny{Source: \url{https://www.ibm.com/developerworks/community/wikis/
+  \frametitle{Storage area network}
+  \begin{figure}
+    \centering
+    \includegraphics[height=7cm]{./img/san.eps}
+    \caption{\tiny{Source: \url{https://www.ibm.com/developerworks/community/wikis/
         %\caption{\tiny{Source: \url{https://www.ibm.com/developerworks/community/wikis/home?lang=en\#!/wiki/IBM\%20Technology\%20Made\%20Simple/page/Storage\%20Virtualization\%20Technology
-        }}}
-    \end{figure}
+    }}}
+  \end{figure}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Storage virtualization}
-    \begin{figure}
-        \centering
-        \includegraphics[height=5cm]{./img/virt-storage.eps}
-        \caption{\tiny{Source: \url{https://sharedstorage.wordpress.com/2017/01/03/storage-virtualization/}}}
-    \end{figure}
-\end{frame}
-
-\begin{frame}
- \frametitle{Data consistency}
- \begin{figure}
+  \frametitle{Data consistency}
+  \begin{figure}
     \centering
     \includegraphics[height=5cm]{./img/disk-paxos.eps}
     \caption{\tiny{Source: \url{https://www.linuxjournal.com/content/high-availability-storage-ha-lvm}}}
@@ -108,12 +99,20 @@
 
 
 \begin{frame}
-    \frametitle{sanlock}
-    \begin{itemize}
-     \item \color{blue}\url{https://pagure.io/sanlock}\color{black}
-     \item Shared storage lock manager.
-     \item Build on top of Disk Paxos and $\Delta$-Leases algorithms.
-    \end{itemize}
+  \frametitle{sanlock}
+  \begin{itemize}
+    \item Shared storage lock manager.
+    \item Build on top of Disk Paxos and $\Delta$-Leases algorithms.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Distributed consensus problem}
+  \begin{figure}
+    \centering
+    \includegraphics[width=10cm]{./img/two_hard_things.eps}
+    \caption{\tiny{Source: \url{https://twitter.com/mathiasverraes/status/632260618599403520}}}
+  \end{figure}
 \end{frame}
 
 \begin{frame}
@@ -206,31 +205,19 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}
-    \frametitle{Broadcasting a value}
-    \centering
-    If \texttt{p} learns that some other value was committed during the process $\rightarrow$ abort and output committed value.
-\end{frame}
-
-
-\begin{frame}
- \frametitle{Unsolved problems}
- \begin{itemize}
-  \item How to add processors.
-  \item How to store location/mapping of processors on the disks.
- \end{itemize}
-\end{frame}
+% \begin{frame}
+%     \frametitle{Broadcasting a value}
+%     \centering
+%     If \texttt{p} learns that some other value was committed during the process $\rightarrow$ abort and output committed value.
+% \end{frame}
 
 \begin{frame}
- \frametitle{Other problems}
- \centering
- \begin{figure}
-        \centering
-        \includegraphics[height=7cm]{./img/howard_disk_paxos.eps}
-        \caption{\tiny{Source: \url{https://twitter.com/heidiann360/status/1189137985830297600}}}
-    \end{figure}
+  \frametitle{Unsolved problems}
+  \begin{itemize}
+    \item How to add processors.
+    \item How to establish mapping of processors on the disks.
+  \end{itemize}
 \end{frame}
-
 
 \begin{frame}
     \frametitle{$\Delta$-Lease}
@@ -249,8 +236,8 @@
     
     \centering
     \begin{itemize}
-     \item Once acquired, lock is hold for time period $\Delta$.
      \item The time it takes for correct process to complete its access to do some operation on shared memory object (typically read/write) is strictly less than a known bound $\delta$ (known delay model).
+     \item Once acquired, lock is hold for time period $\Delta$.
     \end{itemize}
 \end{frame}
 
@@ -263,70 +250,122 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{sanlock $\Delta$-Leases}
-    \begin{itemize}
-     \item $\Delta$-Leases are slow.
-     \item For sanlock internal usage only.
-     \item For keeping host ID
-     \begin{itemize}
-        \item Prevents two hosts to have same ID.
-        \item Lease renewal is used also for checking is host is alive.
-     \end{itemize}
-     \item In sanlock it's called lockspace.
-     \item Lockspace is 1MB.
-     \item Max hosts is 2000 (for block size 512B)
-     \item sanlock renews delta leases every 20 seconds (by default) by writing a new timestamp into the delta lease sector.
-
-    \end{itemize}
+  \frametitle{sanlock: big picture}
+  \begin{itemize}
+    \item $\Delta$-leases are used for acquiring/confirming unique ID for each host (only for sanlock internal usage)
+    \item Paxos leases are used for acquiring locks for resources (meaning of the lock is determined by the application).
+    \item Unique host IDs are use for Paxos leases for mapping host to its disk segment.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
-    \frametitle{sanlock Disk Paxos leases}
-    \begin{itemize}
-     \item Fast to acquire.
-     \item Provided to application to as general purpose application leases.
-     \item Host IDs are used as Paxos leases owners.
-     \item Lease is 1MB.
-     \item Lease for one resource.
-    \end{itemize}
+    \frametitle{sanlock: $\Delta$-Leases}
+  \begin{itemize}
+    \item In sanlock terminology called \textit{lockspaces}.
+    \item Prevents two hosts to have same ID.
+    \item Maximum number of hosts is 2000.
+    \item Lockspace size is 1~MB (for block size 512B).
+    \item Use options \texttt{-A} and \texttt{-Z} to change alignment and block size.
+  \end{itemize}
 \end{frame}
+
+\begin{frame}
+  \frametitle{sanlock: $\Delta$-Leases}
+  \begin{itemize}
+    \item sanlock renews $\Delta$-leases every 20 seconds by writing a new time stamp into appropriate $\Delta$-lease block.
+    \item Lease renewal is used also for checking if host is alive.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{sanlock: Paxos leases}
+  \begin{itemize}
+    \item Fast to acquire.
+    \item In sanlock terminology called \textit{resources}.
+    \item Lease is acquired by the winner by writing its ballot into to the first block of the resource disk area.
+    \item sanlock uses $\Delta$-lease renewals also for Paxos leases renewal in given lockspace.
+  \end{itemize}
+\end{frame}
+
+% \begin{frame}
+%   \frametitle{sanlock: Paxos leases}
+%   \begin{itemize}
+%     \item Host IDs are used as Paxos leases owners.
+%     \item Size of Paxos lease is also 1~MB (for block size 512B).
+%     \item Lease is acquired by the winner by writing its ballot into to the first block of the resource disk area.
+%   \end{itemize}
+% \end{frame}
 
 \begin{frame}
  \frametitle{Using sanlock}
  Application which wants to use sanlock need to:
  \begin{itemize}
-  \item initialize lockspace at the beginning,
-  \item join the lockspace when it starts,
-  \item acquire/release lease for a resource.
+  \item initialize lockspace (once) on each host/disk == prepare disk space for sanlock,
+  \item join the lockspace when it starts == acquire $\Delta$-lease,
+  \item acquire/release lease for a resource == acquire/release Paxos lease.
+  \item leave the lockspace == release $\Delta$-lease.
  \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-    \frametitle{Summary}
-    \begin{itemize}
-     \item For locking the data on a shared storage lock located with data can be better solution than dedicated lock manager.
-     \item There are various algorithms for storage-centric locks, e.g. Disk Paxos, a modification of classical Paxos algorithm.
-     \item Disk Paxos itself is not sufficient for full implementation of shared disk locks and has to be used with some other algorithm, e.g. $\Delta$-Lease.
-     \item Implementation of this approach can be found in sanlock project.
-    \end{itemize}
+  \frametitle{Summary}
+  \begin{itemize}
+    \item sanlock combines $\Delta$-lease and Disk Paxos algorithms in its own way.
+    \item There are more parts, e.g. watchdog.
+    \item Before changing anything, be sure you know what you are doing (e.g. before changing any timeouts, read at least \texttt{src/timeouts.h}).
+    \item Understanding of $\Delta$-lease and Disk Paxos algorithms should be a good start to understand rest of the sanlock.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{Questions?}
     \centering
+     \textbf{\Huge{Thank you!}}
+    
+    \vspace{1.5cm}
+    
     \textbf{\Huge{Questions?}}
     
     \vspace{1cm}
     
     \centering
-    \textbf{\dots read Disk Paxos and $\Delta$-Lease papers}:
+    \textbf{\dots read sanlock source code, Disk Paxos and $\Delta$-Lease papers} :-)
     \vspace{0.5cm}
     \begin{itemize}
-     \item \small\color{blue}\href{http://lamport.azurewebsites.net/pubs/disk-paxos-disc.pdf}{E. Gafni, L. Lamport, Disk Paxos}\color{black}
+    \item \small \color{blue}\url{https://pagure.io/sanlock}\color{black}
+     \item \color{blue}\href{http://lamport.azurewebsites.net/pubs/disk-paxos-disc.pdf}{E. Gafni, L. Lamport, Disk Paxos}\color{black}
      \item \color{blue}\href{https://groups.csail.mit.edu/tds/papers/Chockler/TR934.ps}{G. Chockler, D. Malkhi, Light-Weight Leases for Storage-Centric Coordination}\color{black}
     \end{itemize}
 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% BACKUP
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+	\centering
+	\huge{\textbf{Backup slides}}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data consistency example: Storage virtualization}
+  \begin{figure}
+    \centering
+    \includegraphics[height=5cm]{./img/virt-storage.eps}
+    \caption{\tiny{Source: \url{https://sharedstorage.wordpress.com/2017/01/03/storage-virtualization/}}}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Other problems}
+ \centering
+ \begin{figure}
+        \centering
+        \includegraphics[height=7cm]{./img/howard_disk_paxos.eps}
+        \caption{\tiny{Source: \url{https://twitter.com/heidiann360/status/1189137985830297600}}}
+    \end{figure}
 \end{frame}
     
 \end{document}
