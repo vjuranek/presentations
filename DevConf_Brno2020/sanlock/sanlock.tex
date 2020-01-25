@@ -297,26 +297,31 @@
 % \end{frame}
 
 \begin{frame}
- \frametitle{Using sanlock}
- Application which wants to use sanlock need to:
- \begin{itemize}
-  \item initialize lockspace (once) on each host/disk == prepare disk space for sanlock,
-  \item join the lockspace when it starts == acquire $\Delta$-lease,
-  \item acquire/release lease for a resource == acquire/release Paxos lease.
-  \item leave the lockspace == release $\Delta$-lease.
- \end{itemize}
-\end{frame}
-
-
-\begin{frame}
   \frametitle{Summary}
+
   \begin{itemize}
-    \item sanlock combines $\Delta$-lease and Disk Paxos algorithms in its own way.
+    \item initialize lockspace (once) on each host/disk == prepare disk space for sanlock,
+    \item join the lockspace when it starts == acquire $\Delta$-lease,
+    \item acquire/release lease for a resource == acquire/release Paxos lease.
+    \item leave the lockspace == release $\Delta$-lease.
+   \end{itemize}
+   
+   \vspace{0.5cm}
+   
+   \begin{itemize}
     \item There are more parts, e.g. watchdog.
     \item Before changing anything, be sure you know what you are doing (e.g. before changing any timeouts, read at least \texttt{src/timeouts.h}).
-    \item Understanding of $\Delta$-lease and Disk Paxos algorithms should be a good start to understand rest of the sanlock.
-  \end{itemize}
+   \end{itemize}
 \end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Summary}
+%   \begin{itemize}
+%     \item sanlock combines $\Delta$-lease and Disk Paxos algorithms in its own way.
+%     \item Understanding of $\Delta$-lease and Disk Paxos algorithms should be a good start to understand rest of the sanlock.
+%   \end{itemize}
+% \end{frame}
 
 \begin{frame}
     \frametitle{Questions?}
