@@ -121,3 +121,6 @@ sympy-plots-for-*.tex/
 
 # maven, java etc. from demos
 target/
+
+# recordings of the demos
+*.mp4
