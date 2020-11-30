@@ -244,6 +244,8 @@ r 78bc1ebc-4f18-4b15-a112-5524fcb198c6:SDM:/rhev/data-center/mnt/192.168.122.13\
         \item \texttt{ids} - contains $\Delta$-leases
         \item \texttt{leases} - contains resource leases
         \item \texttt{xleases} - contains mapping between lease name and its offset in \texttt{leases}. When corrupted, can be rebuild by \texttt{vdsm-tool rebuild-xleases}
+        \item Currently \texttt{io\_timeout\_seconds} cannot be change in vdsm, i.e. sanlock uses its default value of 10 s.
+        \item In the future will be configurable, see \color{blue}\href{https://gerrit.ovirt.org/\#/q/project:vdsm+branch:master+topic:io-timeout}{vdsm io-timeout topic branch}\color{black}
     \end{itemize}
 \end{frame}
 
