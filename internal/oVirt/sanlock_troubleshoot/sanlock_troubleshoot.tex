@@ -98,7 +98,7 @@
 \begin{frame}
   \frametitle{sanlock}
     \begin{itemize}
-        \item Lock manager.
+        \item Distributed lock manager.
         \item Uses shared storage for exchanging information between participants.
         \item Can be used to protect any resource, not only data (e.g. keep lease for SPM host in vdsm).
     \end{itemize}
@@ -122,7 +122,7 @@
 \begin{frame}
     \frametitle{$\Delta$-Leases}
   \begin{itemize}
-    \item In sanlock terminology called \textit{lockspaces}.
+    \item In sanlock terminology, obtaining the $\Delta$-leases is called to join the \textit{lockspaces}.
     \item Prevents two hosts to have same ID.
     \item Lockspace size is 1~MB (for block size 512B).
     \item Maximum number of hosts is 2000.
@@ -163,6 +163,33 @@
 \end{frame}
 
 \begin{frame}
+    \frametitle{Usefull commands}
+    \begin{itemize}
+        \item \texttt{less /var/log/sanlock.log}
+        \item \texttt{sanlock client host\_status}
+        \item \texttt{sanlock client status}
+        \item \texttt{sanlock client log\_dump}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{sanlock status}
+    \begin{lstlisting}[style=log]
+s 78bc1ebc-4f18-4b15-a112-5524fcb198c6:1:/rhev/data-center/mnt/192.168.122.13\:_srv_data_sanlock/78bc1ebc-4f18-4b15-a112-5524fcb198c6/dom_md/ids:0
+r 78bc1ebc-4f18-4b15-a112-5524fcb198c6:SDM:/rhev/data-center/mnt/192.168.122.13\:_srv_data_sanlock/78bc1ebc-4f18-4b15-a112-5524fcb198c6/dom_md/leases:1048576:8 p 5578
+    \end{lstlisting}
+    
+    \begin{itemize}
+        \item \texttt{s} - lockspace, \texttt{r} - resource
+        \item name of lockspace
+        \item local host identifier in lockspace or resource name
+        \item path to storage to use for leases
+        \item offset on path (bytes)
+        \item in case of resource there can be leader version and/or \texttt{SH} in case of shared mode
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
     \frametitle{Lockspace/resource options}
     \begin{itemize}
         \item \texttt{lockspace\_name:host\_id:path:offset}
@@ -197,33 +224,6 @@ sanlock shutdown
 losetup -d /dev/loop0
 rm -f /var/tmp/test/sanlock.img 
     \end{lstlisting}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Usefull commands}
-    \begin{itemize}
-        \item \texttt{less /var/log/sanlock.log}
-        \item \texttt{sanlock client status}
-        \item \texttt{sanlock client host\_status}
-        \item \texttt{sanlock client log\_dump}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-    \frametitle{sanlock status}
-    \begin{lstlisting}[style=log]
-s 78bc1ebc-4f18-4b15-a112-5524fcb198c6:1:/rhev/data-center/mnt/192.168.122.13\:_srv_data_sanlock/78bc1ebc-4f18-4b15-a112-5524fcb198c6/dom_md/ids:0
-r 78bc1ebc-4f18-4b15-a112-5524fcb198c6:SDM:/rhev/data-center/mnt/192.168.122.13\:_srv_data_sanlock/78bc1ebc-4f18-4b15-a112-5524fcb198c6/dom_md/leases:1048576:8 p 5578
-    \end{lstlisting}
-    
-    \begin{itemize}
-        \item \texttt{s} - lockspace, \texttt{r} - resource
-        \item name of lockspace
-        \item local host identifier in lockspace or resource name
-        \item path to storage to use for leases
-        \item offset on path (bytes)
-        \item in case of resource there can be leader version and/or \texttt{SH} in case of shared mode
-    \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -292,6 +292,17 @@ ENV{DM_LV_NAME}=="ids|leases|xleases", MODE:="0660", OWNER:="@VDSMUSER@", GROUP:
 % 2020-11-25 11:23:27 2201 [842]: s2 host 2 1 2179 6baa14ed-6683-4f19-badf-404f1f0a7d4d.localhost.
 %     \end{lstlisting}
 % \end{frame}
+
+\begin{frame}
+    \frametitle{sanlock troubleshooting: TL\&DR}
+        \begin{itemize}
+            \item Check the storage is correctly connected and writeable.
+            \item Check LVs/files \texttt{ids}, \texttt{leases}, \texttt{xleases} are writeable by \texttt{sanlock} user.
+            \item Check IO on the given storage domain is not extremely slow.
+            \item Check that the block size of the storage was correctly determined by vdsm.
+            \item Check \texttt{/var/log/sanlock.log} for more help.
+        \end{itemize}
+\end{frame}
 
 \begin{frame}
     \frametitle{Resources}
