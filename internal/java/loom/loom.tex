@@ -85,6 +85,15 @@ Future<?> f = executor.submit(task);
     \end{lstlisting}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Java threads    }
+    \begin{figure}
+        \centering
+        \includegraphics[height=3cm]{./img/thread_history.eps}
+        \caption{\tiny{Source: \url{https://2020.accento.dev/talks/project-loom/}}}
+    \end{figure}
+\end{frame}
+
 \begin{frame}[fragile]
     \frametitle{Java concurrency}
     Async. constructs added in Java 8 (e.g. CompletableFuture):
@@ -168,6 +177,15 @@ $private$ $final$ ChannelFutureListener writeFailed = (ChannelFuture future) -> 
 \end{frame}
 
 \begin{frame}
+    \frametitle{Java threads    }
+    \begin{figure}
+        \centering
+        \includegraphics[height=3cm]{./img/virt_threads.eps}
+        \caption{\tiny{Source: \url{http://cr.openjdk.java.net/~alanb/loom/Devoxx2018.pdf}}}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
   \frametitle{Project Loom}
 	\begin{itemize}
 		\item \url{https://wiki.openjdk.java.net/display/loom/Main}
@@ -187,6 +205,12 @@ $private$ $final$ ChannelFutureListener writeFailed = (ChannelFuture future) -> 
 
 \begin{frame}[fragile]
 	\frametitle{Virtual threads}
+        \begin{itemize}
+            \item Not bound to kernel thread (blocking in virtual thread doesn't block kernel thread)
+            \item cheap to create
+            \item future compatible
+        \end{itemize}
+
 	\begin{lstlisting}[style=java]
 var thread = Thread.startVirtualThread(() -> System.out.println("Virtual thread!"));
 thread.join();
@@ -194,17 +218,42 @@ thread.join();
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Virtual threads}
-	\centering
-	\huge{\textbf{Demo}}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Virtual threads}
+% 	\centering
+% 	\huge{\textbf{Demo}}
+% \end{frame}
 
 \begin{frame}
+    \frametitle{Links}
     \begin{itemize}
-        \item \href{https://wiki.openjdk.java.net/display/loom/Main}{\textcolor{blue}{Project Loom web page}\textcolor{black}}
+    {\scriptsize
+        \item \url{http://jdk.java.net/loom/}
+        \item \url{https://wiki.openjdk.java.net/display/loom/Main}
+        \item \url{https://cr.openjdk.java.net/~rpressler/loom/Loom-Proposal.html}
+        \item \url{http://cr.openjdk.java.net/~rpressler/loom/loom/sol1_part1.html}
+        \item \url{https://cr.openjdk.java.net/~rpressler/loom/loom/sol1_part2.html}
+        \item \url{https://www.javaadvent.com/2020/12/project-loom-and-structured-concurrency.html}
+        \item \url{https://blogs.oracle.com/javamagazine/going-inside-javas-project-loom-and-virtual-threads}
+        \item \url{https://blog.softwaremill.com/will-project-loom-obliterate-java-futures-fb1a28508232}
+        \item \url{https://www.youtube.com/watch?v=fOEPEXTpbJA}
+        \item \url{https://www.youtube.com/watch?v=23HjZBOIshY}
+        \item \url{https://www.youtube.com/watch?v=_fFzyY_7UmA}
+        \item \url{http://belaban.blogspot.com/2020/07/double-your-performance-virtual-threads.html}
+    }
     \end{itemize}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Questions?}
+    \centering
+     \textbf{\Huge{Thank you!}}
+    
+    \vspace{1.5cm}
+    
+    \textbf{\Huge{Questions?}}
+    
+    \vspace{1cm}
+\end{frame}
 
 \end{document}
