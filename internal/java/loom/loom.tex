@@ -23,7 +23,7 @@
 \title{OpenJDK project Loom}
 \author{Vojtech Juranek}
 \institute[Red Hat]{oVirt storage team}
-\date{??.~11.~2020}
+\date{2.~3.~2021}
 
 \lstdefinestyle{java}{
 	basicstyle          = \large\ttfamily,
@@ -86,12 +86,30 @@ Future<?> f = executor.submit(task);
 \end{frame}
 
 \begin{frame}
-    \frametitle{Java threads    }
-    \begin{figure}
-        \centering
-        \includegraphics[height=3cm]{./img/thread_history.eps}
-        \caption{\tiny{Source: \url{https://2020.accento.dev/talks/project-loom/}}}
-    \end{figure}
+    \frametitle{Java threads}
+    \begin{itemize}
+        \item 1:1 mapping to OS threads.
+        \item Memory heavy (MBs).
+        \item Context switching is time consuming.
+        \item Creation is expensive.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Thread pooling}
+    \begin{itemize}
+        \item Doesn't solve memory overhead and context switching, just creating overhead.
+        \item Issues with \texttt{ThreadLocal} and thread interrupts.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Asynchronous programming}
+    \begin{itemize}
+        \item Breaking tasks into smaller ones.
+        \item Better CPU utilization, as blocking tasks (typically IO) are waiting in a queue instead blocking thread.
+        \item Chaining usually via callbacks.
+    \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -129,37 +147,6 @@ vertx.createHttpServer().requestHandler(r -> {
     \end{lstlisting}
 \end{frame}
 
-
-\begin{frame}
-  \frametitle{Synchronous vs. asynchronous}
-  \begin{columns}
-        \column{0.6\textwidth}
-            Synchronous:
-            \begin{itemize}
-                \item Simple to reason about it.
-                \item Blocking.
-                \item Less scalable.
-            \end{itemize}
-            
-            \vspace{0.5cm}
-            
-            Asynchronous:
-            \begin{itemize}
-                \item Harder to reason about it.
-                \item Better scales.
-                \item To get maximum benefit from it, all parts have to be asynchronous.
-                \item Can be problematic to make it working with legacy synchronous code.
-            \end{itemize}
-            
-        \column{0.4\textwidth}
-            \begin{figure}
-                \centering
-                \includegraphics[height=5cm]{./img/sync_vs_async.eps}
-                \caption{\tiny{Source: \url{http://cr.openjdk.java.net/~alanb/loom/Devoxx2018.pdf}}}
-            \end{figure}
-    \end{columns}
-\end{frame}
-
 \begin{frame}[fragile]
     \frametitle{Handling error in async. code}
 Netty example:
@@ -177,7 +164,44 @@ $private$ $final$ ChannelFutureListener writeFailed = (ChannelFuture future) -> 
 \end{frame}
 
 \begin{frame}
-    \frametitle{Java threads    }
+  \frametitle{Synchronous vs. asynchronous}
+  \begin{columns}
+        \column{0.6\textwidth}
+            Synchronous:
+            \begin{itemize}
+                \item Simple to reason about it.
+                \item Blocking.
+                \item Less scalable.
+            \end{itemize}
+            
+            \vspace{0.5cm}
+            
+            Asynchronous:
+            \begin{itemize}
+                \item Better scales.
+                \item Harder to reason about it.
+                \item ``Callback hell''.
+                \item To get maximum benefit from it, all parts have to be asynchronous.
+                \item Can be problematic to make it working with legacy synchronous code.
+            \end{itemize}
+            
+        \column{0.4\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[height=5cm]{./img/sync_vs_async.eps}
+                \caption{\tiny{Source: \url{http://cr.openjdk.java.net/~alanb/loom/Devoxx2018.pdf}}}
+            \end{figure}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Java threads}
+    What about having positives from both approaches:
+    \begin{itemize}
+        \item Code like synchronous code.
+        \item Work like asynchronous code.
+    \end{itemize}
+    
     \begin{figure}
         \centering
         \includegraphics[height=3cm]{./img/virt_threads.eps}
@@ -190,39 +214,146 @@ $private$ $final$ ChannelFutureListener writeFailed = (ChannelFuture future) -> 
 	\begin{itemize}
 		\item \url{https://wiki.openjdk.java.net/display/loom/Main}
 		\item Virtual threads
-		\item Delimited continuations
-		\item Tail-call elimination
+		\item Structured concurrency
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Virtual threads}
-	\begin{itemize}
-		\item Virtual threads cannot be suspended, resumed or stopped with the Thread suspend, resume and stop APIs.
-		\item All virtual threads are in the same ThreadGroup.
-	\end{itemize}
+    \frametitle{Virtual threads}
+    \begin{figure}
+        \centering
+        \includegraphics[height=3cm]{./img/thread_history.eps}
+        \caption{\tiny{Source: \url{https://2020.accento.dev/talks/project-loom/}}}
+    \end{figure}
 \end{frame}
 
 \begin{frame}[fragile]
 	\frametitle{Virtual threads}
         \begin{itemize}
-            \item Not bound to kernel thread (blocking in virtual thread doesn't block kernel thread)
-            \item cheap to create
-            \item future compatible
+            \item Not bound to kernel thread (blocking in virtual thread doesn't block kernel thread).
+            \item Cheap to create.
+            \item Very low memory overhead.
+            \item Future compatible (older code can benefit from new features).
         \end{itemize}
 
+        \vspace{1cm}
+        
 	\begin{lstlisting}[style=java]
 var thread = Thread.startVirtualThread(() -> System.out.println("Virtual thread!"));
 thread.join();
 	\end{lstlisting}
 \end{frame}
 
+\begin{frame}[fragile]
+    \frametitle{Virtual threads}
+    
+    \begin{lstlisting}[style=java]
+Thread thread = Thread.startVirtualThread(runnable);
+    \end{lstlisting}
+    
+    \begin{lstlisting}[style=java]
+Thread thread = Thread.builder()
+   .virtual()
+   .name(taskname)
+   .task(runnable)
+   .build();
+    \end{lstlisting}
+\end{frame}
 
-% \begin{frame}
-%   \frametitle{Virtual threads}
-% 	\centering
-% 	\huge{\textbf{Demo}}
-% \end{frame}
+\begin{frame}[fragile]
+    \frametitle{Virtual threads with executor service}
+
+    \begin{lstlisting}[style=java]
+ExecutorService exec = Executors.newVirtualThreadExecutor();
+exec.submit(runable1)
+exec.submit(runable2)
+...
+    \end{lstlisting}
+    
+    \begin{lstlisting}[style=java]
+ThreadFactory factory = Thread.builder()
+   .virtual()
+   .name(taskname)
+   .task(runnable)
+   .factory();
+
+ExecutorService exec = Executors.newThreadExecutor(factory);
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Structured programming}
+    \begin{figure}
+        \centering
+        \includegraphics[height=2cm]{./img/goto.eps}
+        \includegraphics[height=5cm]{./img/goto_example.eps}
+        \caption{\tiny{Source: \url{https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/}}}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Structured programming}
+    \begin{figure}
+        \centering
+        Replacing \texttt{goto} with  \texttt{if-else}, \texttt{loop} statements and function calls in 60s:
+        \includegraphics[height=5cm]{./img/structured.eps}
+        \caption{\tiny{Source: \url{https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/}}}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Structured concurrency}
+    \begin{itemize}
+        \item Launching a task in a thread is like using \texttt{goto}.
+        \item Structured concurrency is similar to using \texttt{if-else} and \texttt{loop} statements instead of \texttt{goto}.
+    \end{itemize}
+
+    \begin{figure}
+        \centering
+        \includegraphics[height=5cm]{./img/structured_concurrency.eps}
+        \caption{\tiny{Source: \url{https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/}}}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Structured concurrency}
+
+    \begin{lstlisting}[style=java]
+try (ExecutorService exec = Executor.newVirtualThreadExecutor()) {
+      exec.submit(runable1);
+      exec.submit(runable2);
+      exec.submit(runable3);
+}
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Structured concurrency: deadlines}
+
+    \begin{lstlisting}[style=java]
+ThreadFactory factory = Thread.builder().virtual().factory();
+try (var executor = 
+    Executors.newThreadExecutor(factory)
+    .withDeadline(Instant.now().plusSeconds(30))) {
+    executor.submit(task1);
+    executor.submit(task2);
+}
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+    \frametitle{There is more}
+    \begin{itemize}
+        \item Structured cancelation.
+        \item Scope variables.
+        \item Thread local.
+        \item $\dots$
+    \end{itemize}
+    
+    \vspace{1cm}
+    
+    Beware: nothing is set in the store yet, still under development.
+\end{frame}
 
 \begin{frame}
     \frametitle{Links}
