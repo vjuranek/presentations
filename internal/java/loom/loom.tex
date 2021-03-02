@@ -58,6 +58,14 @@
 	\titlepage
 \end{frame}
 
+\begin{frame}
+    \frametitle{Java concurrency}
+    \begin{figure}
+        \centering
+        \includegraphics[height=7cm]{./img/jcp.eps}
+    \end{figure}
+\end{frame}
+
 \begin{frame}[fragile]
     \frametitle{Java concurrency}
     Low-level thread: \texttt{java.lang.Threads} class and \texttt{java.lang.Runnable}.
@@ -100,6 +108,7 @@ Future<?> f = executor.submit(task);
     \begin{itemize}
         \item Doesn't solve memory overhead and context switching, just creating overhead.
         \item Issues with \texttt{ThreadLocal} and thread interrupts.
+        \item Mitigate context switching $\rightarrow$ core-per-thread architecture.
     \end{itemize}
 \end{frame}
 
@@ -344,7 +353,7 @@ try (var executor =
 \begin{frame}
     \frametitle{There is more}
     \begin{itemize}
-        \item Structured cancelation.
+        \item Structured cancelations.
         \item Scope variables.
         \item Thread local.
         \item $\dots$
