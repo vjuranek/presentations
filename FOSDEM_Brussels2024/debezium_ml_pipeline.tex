@@ -18,6 +18,39 @@
 
 \setbeamertemplate{caption}{\raggedright\insertcaption\par} %turn off caption prefix ("Figure")
 
+\definecolor{delim}{RGB}{20,105,176}
+\definecolor{numb}{RGB}{106, 109, 32}
+\definecolor{string}{rgb}{0.64,0.08,0.08}
+
+% Define JSON language style
+% Taken from https://gist.github.com/ed-cooper/1927af4ccac39b083440d436d018d253
+\lstdefinelanguage{json}{
+    showspaces=false,
+    showtabs=false,
+    breaklines=true,
+    %postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{gray}\hookrightarrow\space}},
+    breakatwhitespace=true,
+    basicstyle=\ttfamily\footnotesize,
+    upquote=true,
+    morestring=[b]",
+    stringstyle=\color{string},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
 
 \title{Feeding ML models with the data from the databases in real-time}
 \author{Vojtěch Juránek}
@@ -96,14 +129,44 @@
     
     For more details see
     \begin{itemize}
-        \item  \footnotesize \color{blue}\url{https://debezium.io/blog/2023/05/02/tensorflow-mnist-classification}\color{black}
-        \item  \footnotesize \color{blue}\url{https://github.com/debezium/debezium-examples/tree/main/machine-learning/tensorflow-mnist}\color{black}
+        \color{blue}
+        \item \href{https://debezium.io/blog/2023/05/02/tensorflow-mnist-classification}{Image classification with Debezium and TensorFlow blog post}
+        \item \href{https://github.com/debezium/debezium-examples/tree/main/machine-learning/tensorflow-mnist}{Full example on GitHub}
+        \color{black}
     \end{itemize}
 \end{frame}
 
+
 \begin{frame}[fragile]
+    \frametitle{Debezium configuration}
     \footnotesize
-    %\begin{lstlisting}
+    \begin{lstlisting}[language=json]
+{
+  "name": "mnist-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "postgres",
+    "database.dbname" : "postgres",
+    "topic.prefix": "tf",
+    "table.include.list": "public.mnist_.*",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "transforms": "unwrap, mnist",
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.mnist.type": "io.debezium.transforms.MnistToCsv"
+  }
+} 
+     \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Reading data in TensorFlow}
+    \vspace{-0.2cm}
+    \footnotesize
     \begin{python}
 # define function for decoding Kafka records
 def decode_kafka_stream_record(message, key):
@@ -111,7 +174,6 @@ def decode_kafka_stream_record(message, key):
     img_norm = tf.cast(img_int, tf.float32) / 255.
     label_int = tf.strings.to_number(key, out_type=tf.dtypes.int32)
     return (img_norm, label_int)
-
 # define Kafka data stream
 test_ds = tfio.experimental.streaming.KafkaGroupIODataset(
     topics=[KAFKA_TEST_TOPIC],
@@ -124,15 +186,12 @@ test_ds = tfio.experimental.streaming.KafkaGroupIODataset(
         "auto.offset.reset=earliest"
     ],
 )
-
 # read batches of Kafka records
 test_ds = test_ds.map(decode_kafka_stream_record)
 test_ds = test_ds.batch(BATCH_SIZE)
-
 # make predictions on the data samples
 model.evaluate(test_ds)
     \end{python}
-    %\end{lstlisting}
 \end{frame}
 
 
@@ -157,9 +216,12 @@ model.evaluate(test_ds)
     \vspace{0.5cm}
     
     \centering
-    \color{blue}\url{https://debezium.io}\color{black} \\
-    \color{blue}\url{https://debezium.zulipchat.com}\color{black} \\
-    \color{blue}\url{https://github.com/debezium}\color{black} \\
+    \color{blue}
+    \url{https://debezium.io}\\
+    \url{https://debezium.zulipchat.com}\\
+    \url{https://groups.google.com/g/debezium}\\
+    \url{https://github.com/debezium}\\
+    \color{black}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -183,8 +245,8 @@ model.evaluate(test_ds)
     
     For more details see
     \begin{itemize}
-        \item  \footnotesize \color{blue}\url{https://debezium.io/blog/2023/09/23/flink-spark-online-learning}\color{black}
-        \item  \footnotesize \color{blue}\url{https://github.com/debezium/debezium-examples/tree/main/machine-learning/flink-spark-iris}\color{black}
+        \item  \footnotesize \color{blue}\url{https://debezium.io/blog/2023/09/23/flink-spark-online-learning}
+        \item  \footnotesize \url{https://github.com/debezium/debezium-examples/tree/main/machine-learning/flink-spark-iris}\color{black}
     \end{itemize}
 \end{frame}
 
