@@ -14,13 +14,39 @@
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{listings}
-\usepackage{pythonhighlight} % dnf install texlive-pythonhighlight
+\usepackage{fancyvrb}
 
 \setbeamertemplate{caption}{\raggedright\insertcaption\par} %turn off caption prefix ("Figure")
 
 \definecolor{delim}{RGB}{20,105,176}
 \definecolor{numb}{RGB}{106, 109, 32}
 \definecolor{string}{rgb}{0.64,0.08,0.08}
+
+\lstdefinestyle{java}{
+	basicstyle          = \normalsize\ttfamily,
+	language            = java,
+	numbers             = left,
+	numberstyle         = \small,
+	stepnumber          = 1,
+	numbersep           = 5pt,
+	backgroundcolor     = \color{white},
+	showspaces          = false,
+	showstringspaces    = false,
+	showtabs            = false,
+	frame               = single,
+	tabsize             = 2,
+	captionpos          = b,
+	breaklines          = true,
+	breakatwhitespace   = false,
+	morestring          = [b]",
+	stringstyle         = \color{blue},
+	keywordstyle        = \color{magenta},
+	commentstyle        = \color{gray},
+	identifierstyle     = \color{black},
+	moredelim           = **[is][\bfseries]{`}{`},
+	moredelim           = **[is][\color{magenta}]{$}{$}, 
+	fancyvrb            = true,
+}
 
 
 \title{Debezium Asynchronous Engine}
@@ -52,12 +78,72 @@
 \end{frame}
 
 \begin{frame}
+    \frametitle{Asynchronous engine goals}
+    \begin{itemize}
+        \item Allow to run multiple source tasks for given connector if the connector provides multiple tasks.
+        \item Run potentially time-consuming code (e.g. event transformation or serialization) in the dedicated threads.
+        \item Allow possible further speedup by optionally disabling total ordering of the messages.
+        \item Be well-prepared for future changes and new features:
+        \begin{itemize}
+            \item Switch to virtual threads.
+            \item Delegate tasks to external works using gRPC.
+            \item Provide Debeziuum engine as a Quarkus extension.
+            \item \dots
+        \end{itemize}
+        \item Adjust Debezium testsuite to use \texttt{DebeziumEngine} interface instead hardcoded \texttt{EmbeddedEngine}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Asynchronous engine non-goals}
+    \begin{itemize}
+        \item Change \texttt{DebeziumEngine} interface.
+        \item Implement any parallelization inside connectors.
+        \item Remove dependency on Kafka Connect API.
+        \item Add support for multiple source connectors or sink connector.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}
     \frametitle{Debezium asynchronous engine}
     \begin{figure}
         \centering
         \includegraphics[height=6cm]{./img/async_engine.eps}
     \end{figure}
 \end{frame}
+
+\begin{frame}
+    \frametitle{Engine states}
+    \begin{itemize}
+        \item \texttt{CREATING} - engine object is being created or was already created, but \texttt{run()} method wasn't called yet
+        \item \texttt{INITIALIZING} - initializing the connector
+        \item \texttt{CREATING\_TASKS} - creating connector tasks
+        \item \texttt{STARTING\_TASKS} - starting connector tasks
+        \item \texttt{POLLING\_TASKS} - running tasks polling, this is the main phase when the data are produced
+        \item \texttt{STOPPING} - the engine is being stopped
+        \item \texttt{STOPPED} - engine has been stopped, any call on engine object in this state should fail
+
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Record processor}
+    \begin{lstlisting}[style=java]
+@Incubating
+public interface RecordProcessor<R> {
+    void initialize(
+        final ExecutorService recordService,
+        final Transformations transformations,
+        final Function<SourceRecord, R> serializer,
+        final RecordCommitter committer);
+
+    void processRecords(final List<SourceRecord> records) throws InterruptedException;
+}
+    \end{lstlisting}
+\end{frame}
+
 
 \begin{frame}
     \frametitle{Resource}
