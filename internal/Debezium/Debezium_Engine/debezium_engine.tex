@@ -123,7 +123,6 @@
         \item \texttt{POLLING\_TASKS} - running tasks polling, this is the main phase when the data are produced
         \item \texttt{STOPPING} - the engine is being stopped
         \item \texttt{STOPPED} - engine has been stopped, any call on engine object in this state should fail
-
     \end{itemize}
 \end{frame}
 
@@ -144,6 +143,29 @@ public interface RecordProcessor<R> {
     \end{lstlisting}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Async engine specific configuration options}
+    \begin{itemize}
+        \item \texttt{record.processing.threads} - number of threads to be used for processing CDC records.
+        \item \texttt{record.processing.shutdown.timeout.ms} - maximum time in milliseconds to wait for processing submitted records when task shutdown is called.
+        \item \texttt{record.processing.order} - determines how the records should be produced (\texttt{ORDERED}, \texttt{UNORDERED}).
+        \item \texttt{record.processing.with.serial.consumer} - specifies whether the default ChangeConsumer should be created from provided Consumer, resulting in serial Consumer processing.
+        \item \texttt{task.management.timeout.ms} - time to wait for task's lifecycle management operations (starting and stopping).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Auxiliary interfaces and classes}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Future}
+    \begin{itemize}
+        \item gRPC
+        \item virtual threads  - switching just few lines of code
+    \end{itemize}
+\end{frame}
 
 \begin{frame}
     \frametitle{Resource}
