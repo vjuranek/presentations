@@ -78,18 +78,20 @@
 \end{frame}
 
 \begin{frame}
+    \frametitle{Record processing:  embedded engine}
+    \begin{figure}
+        \centering
+        \includegraphics[height=5.5cm]{./img/synchronous_processing.eps}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
     \frametitle{Asynchronous engine goals}
     \begin{itemize}
         \item Allow to run multiple source tasks for given connector if the connector provides multiple tasks.
         \item Run potentially time-consuming code (e.g. event transformation or serialization) in the dedicated threads.
         \item Allow possible further speedup by optionally disabling total ordering of the messages.
         \item Be well-prepared for future changes and new features:
-        \begin{itemize}
-            \item Switch to virtual threads.
-            \item Delegate tasks to external works using gRPC.
-            \item Provide Debeziuum engine as a Quarkus extension.
-            \item \dots
-        \end{itemize}
         \item Adjust Debezium testsuite to use \texttt{DebeziumEngine} interface instead hardcoded \texttt{EmbeddedEngine}.
     \end{itemize}
 \end{frame}
@@ -104,7 +106,6 @@
     \end{itemize}
 \end{frame}
 
-
 \begin{frame}
     \frametitle{Debezium asynchronous engine}
     \begin{figure}
@@ -113,8 +114,42 @@
     \end{figure}
 \end{frame}
 
+\begin{frame}[fragile]
+    \frametitle{Asynchronous engine}
+    \begin{itemize}
+      \item Just another implementation of \texttt{DebeziumEngine} interface
+      \item Creation and APIs are same as for \texttt{EmbeddedEngine}, only use different builder factory
+    \end{itemize}
+
+    \begin{lstlisting}[style=java]
+ DebeziumEngine engine = DebeziumEngine.create(
+         keyFormat, valueFormat, headerFormat,
+        ConvertingAsyncEngineBuilderFactory.class.getName())
+        .using(props)
+        .notifying(consumer)
+        .build();
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Async engine specific configuration options}
+    \begin{itemize}
+        \item \texttt{record.processing.threads} - number of threads to be used for processing CDC records.
+        \item \texttt{record.processing.shutdown.timeout.ms} - maximum time in milliseconds to wait for processing submitted records when task shutdown is called.
+        \item \texttt{record.processing.order} - determines how the records should be produced (\texttt{ORDERED}, \texttt{UNORDERED}).
+        \item \texttt{record.processing.with.serial.consumer} - specifies whether the default ChangeConsumer should be created from provided Consumer, resulting in serial Consumer processing.
+        \item \texttt{task.management.timeout.ms} - time to wait for task's lifecycle management operations (starting and stopping).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \huge{\textbf{\texttt{AsyncEngine} internals}}
+\end{frame}
+
 \begin{frame}
     \frametitle{Engine states}
+    \texttt{AsyncEngine} lifecycle pahses and states:
     \begin{itemize}
         \item \texttt{CREATING} - engine object is being created or was already created, but \texttt{run()} method wasn't called yet
         \item \texttt{INITIALIZING} - initializing the connector
@@ -126,6 +161,13 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Debezium asynchronous engine}
+    \begin{figure}
+        \centering
+        \includegraphics[height=6cm]{./img/async_engine_states.eps}
+    \end{figure}
+\end{frame}
 
 \begin{frame}[fragile]
     \frametitle{Record processor}
@@ -144,39 +186,79 @@ public interface RecordProcessor<R> {
 \end{frame}
 
 \begin{frame}
-    \frametitle{Async engine specific configuration options}
-    \begin{itemize}
-        \item \texttt{record.processing.threads} - number of threads to be used for processing CDC records.
-        \item \texttt{record.processing.shutdown.timeout.ms} - maximum time in milliseconds to wait for processing submitted records when task shutdown is called.
-        \item \texttt{record.processing.order} - determines how the records should be produced (\texttt{ORDERED}, \texttt{UNORDERED}).
-        \item \texttt{record.processing.with.serial.consumer} - specifies whether the default ChangeConsumer should be created from provided Consumer, resulting in serial Consumer processing.
-        \item \texttt{task.management.timeout.ms} - time to wait for task's lifecycle management operations (starting and stopping).
-    \end{itemize}
+    \frametitle{Record processing:  async.  engine ordered}
+    \begin{figure}
+        \centering
+        \includegraphics[height=5.5cm]{./img/parallel_processing_batch.eps}
+    \end{figure}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Auxiliary interfaces and classes}
+    \frametitle{Record processing:  async.  engine unordered}
+    \begin{figure}
+        \centering
+        \includegraphics[height=5.5cm]{./img/parallel_processing_async.eps}
+    \end{figure}
 \end{frame}
 
+\begin{frame}[fragile]
+    \frametitle{Auxiliary interfaces and classes}
+    \begin{lstlisting}[style=java]
+@Incubating
+public interface DebeziumSourceConnector {
+    DebeziumSourceConnectorContext context();
+    void initialize(DebeziumSourceConnectorContext context);
+}
+    \end{lstlisting}
+    
+    \begin{lstlisting}[style=java]
+@Incubating
+public interface DebeziumSourceConnectorContext {
+    OffsetBackingStore offsetStore();
+    OffsetStorageReader offsetStorageReader();
+    OffsetStorageWriter offsetStorageWriter();
+}
+    \end{lstlisting}
+    and more. See \texttt{debezium-embedded/src/main/java/io/debezium/engine/source/}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \huge{\textbf{Code walk through}}
+\end{frame}
 
 \begin{frame}
     \frametitle{Future}
     \begin{itemize}
         \item gRPC
         \item virtual threads  - switching just few lines of code
+        \item Quarkus integration
     \end{itemize}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Resource}
+    \frametitle{Resources}
     \begin{itemize}
         \color{blue}
         \item \href{https://github.com/debezium/debezium-design-documents/blob/main/DDD-7.md}{DDD-7: Asynchronous Debezium Embedded Engine}
         \item \href{https://github.com/debezium/debezium-design-documents/pull/8}{Discussion under DDD-7 PR}
+        \item \href{https://issues.redhat.com/browse/DBZ-7024}{DBZ-7024 - main async. engine tracking Jira}
+        \item \color{black}Other possible interesting Jiras:\color{blue} \href{https://issues.redhat.com/browse/DBZ-7764}{DBZ-7764}, \href{https://issues.redhat.com/browse/DBZ-7777}{DBZ-7777}
         \color{black}
     \end{itemize}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Questions?}
+    \centering
+     \textbf{\Huge{Thank you!}}
+    
+    \vspace{1.5cm}
+    
+    \textbf{\Huge{Questions?}}
+    
+    \vspace{1cm}
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% BACKUP
