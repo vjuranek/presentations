@@ -114,7 +114,7 @@
         \item Producer obtains producer ID (PID).
         \begin{itemize}
           \item Based on it's \texttt{transactional.id} producer obtains PID from the coordinator.
-          \item also bumps the epoch for given producer
+          \item Coordinator also bumps the epoch for given producer
           \item and resolves exiting pending transaction from given producer 
         \end{itemize}
     \end{enumerate}
@@ -144,11 +144,11 @@
         \setcounter{enumi}{3}
         \item Consume-transform-produce loop.
           \begin{itemize}
-            \item Coordinator starts TX timer.
             \item Producer requests adding partitions to TX request.
+            \item Coordinator starts TX timer.
             \item Producer sends TX messages.
-            \item Producer sends request for adding offsets into TX (enables batching of consumer and produced messages).
-            \item Producer sends TX offset commit request to the coordinator.
+            \item Producer sends TX coordinator request for adding offsets into TX (enables batching of consumer and produced messages).
+            \item Producer sends TX offset commit request to the consumer coordinator.
           \end{itemize}
     \end{enumerate}
     \begin{figure}
