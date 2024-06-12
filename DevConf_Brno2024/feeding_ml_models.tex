@@ -14,6 +14,7 @@
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{listings}
+\usepackage{fancyvrb}
 \usepackage{pythonhighlight} % dnf install texlive-pythonhighlight
 \usepackage{lmodern}
 
@@ -50,6 +51,32 @@
       {\}}{{{\color{delim}{\}}}}}{1}
       {[}{{{\color{delim}{[}}}}{1}
       {]}{{{\color{delim}{]}}}}{1},
+}
+
+\lstdefinestyle{java}{
+    basicstyle          = \footnotesize\ttfamily,
+    language            = java,
+    numbers             = left,
+    numberstyle         = \small,
+    stepnumber          = 1,
+    numbersep           = 5pt,
+    backgroundcolor     = \color{white},
+    showspaces          = false,
+    showstringspaces    = false,
+    showtabs            = false,
+    frame               = single,
+    tabsize             = 2,
+    captionpos          = b,
+    breaklines          = true,
+    breakatwhitespace   = false,
+    morestring          = [b]",
+    stringstyle         = \color{blue},
+    keywordstyle        = \color{magenta},
+    commentstyle        = \color{gray},
+    identifierstyle     = \color{black},
+    moredelim           = **[is][\bfseries]{`}{`},
+    moredelim           = **[is][\color{magenta}]{$}{$}, 
+    fancyvrb            = true,
 }
 
 
@@ -115,12 +142,31 @@
 \end{frame}
 
 \begin{frame}
-   % \frametitle{Change Data Capture (CDC)}
     \begin{figure}
         \centering
         \includegraphics[height=7cm]{./img/cdc.eps}
     \end{figure}
 \end{frame}
+
+\begin{frame}
+   \frametitle{Debezium}
+   \begin{figure}
+        \centering
+        \includegraphics[height=1.5cm]{./img/debezium.eps}
+    \end{figure}
+    
+    \vspace{0.5cm}
+    
+   \begin{itemize}
+     \item Leading CDC framework, de-facto industry standard.
+     \item Fully open source: \textcolor{blue}{\url{https://github.com/debezium/}}
+     \item Supports all major databases, including non-relational databases.
+     \item Integrations with many 3rd-party tools and frameworks.
+     \item Large and active user community.
+     \item Used by many companies in production (see \textcolor{blue}{\href{https://debezium.io/community/users/}{Debezium public references}}).
+   \end{itemize}
+\end{frame}
+
 
 \begin{frame}
     \begin{figure}
@@ -158,21 +204,98 @@
 \end{frame}
 
 \begin{frame}
-    % \frametitle{Debezium}
-    \vspace*{-1cm}
+    \vspace*{1cm}
+    \centering
+    \textbf{\huge{Back to the demo!}}
+    
+    \vspace*{0.5cm}
+    
     \begin{figure}
-        \includegraphics[height=5cm]{./img/qt_to_tf.eps}
+        \includegraphics[height=4cm]{./img/qt_to_tf.eps}
     \end{figure}
+    
+    \vspace*{0.5cm}
     
     For more details see
     \begin{itemize}
         \color{blue}
         \item \href{https://debezium.io/blog/2023/05/02/tensorflow-mnist-classification}{Image classification with Debezium and TensorFlow blog post}
-        \item \href{https://github.com/debezium/debezium-examples/tree/main/machine-learning/tensorflow-mnist}{Full example on GitHub}
+        \item \href{https://github.com/vjuranek/debezium-mnist-demo}{https://github.com/vjuranek/debezium-mnist-demo}
         \color{black}
     \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+    \frametitle{Reading data from Kafka in TensorFlow}
+    TensorFlow I/O provides \textcolor{blue}{\href{https://www.tensorflow.org/io/api_docs/python/tfio/experimental/streaming/KafkaGroupIODataset}{KafkaGroupIODataset}}:
+    
+    \vspace{0.5cm}
+    
+    \footnotesize
+    \begin{python}
+import tensorflow_io as tfio
+    
+# define Kafka data stream
+test_ds = tfio.experimental.streaming.KafkaGroupIODataset(
+    topics=[KAFKA_TEST_TOPIC],
+    group_id=KAFKA_CONSUMER_GROUP,
+    servers=KAFKA_SERVERS,
+    stream_timeout=KAFKA_STREAM_TIMEOUT,
+    configuration=[
+        "session.timeout.ms=10000",
+        "max.poll.interval.ms=10000",
+        "auto.offset.reset=earliest"
+    ],
+)
+    \end{python}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Possible issues}
+    \textbf{Deserialization issue in TensorFlow:}
+    \vspace{0.5cm}
+   \begin{lstlisting}
+ <tf.Tensor: shape=(64,), dtype=string, numpy=
+ array([b'[B@418b353d', b'[B@6aa28a4c',
+        b'[B@3a3f1c1', b'[B@36e4ff1f',
+        b'[B@765b7f70', b'[B@67567aa3',
+        b'[B@58bc3a3a', b'[B@c6bc0ec',
+        b'[B@64b48bac', b'[B@360a5b76',
+        b'[B@3006c930', b'[B@54b3e5ad',
+        b'[B@155dd43d', b'[B@5e88d5b6',
+        b'[B@7dcdf024', b'[B@6570bf4e',
+       dtype=object)>,
+   \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Single message transform (SMT) to rescue}
+    \begin{itemize}
+      \item Transform inbound and/or outbound messages.
+      \item Can be used also e.g. for filtering to save bandwidth on the early stage of the ML pipeline.
+      \item Many SMTs available out-of-the-box.
+      \item Very easy to write custom SMT.
+    \end{itemize}
+
+    \vspace{0.5cm}
+    
+    \begin{lstlisting}[style=java]
+$@Override$
+public R apply(R r) {
+    final Struct value = (Struct) r.value();
+    String key = value.getInt16(labelFieldName).toString();
+
+    StringBuilder builder = new StringBuilder();
+    for (byte pixel : value.getBytes(pixlesFieldName)) {
+        builder.append(pixel & 0xFF).append(",");
+    }
+    return r.newRecord(r.topic(), r.kafkaPartition(),
+        Schema.STRING_SCHEMA, key,
+        Schema.STRING_SCHEMA,
+        builder.toString(), r.timestamp());
+} 
+     \end{lstlisting}
+\end{frame}
 
 \begin{frame}[fragile]
     \frametitle{Debezium configuration}
@@ -189,12 +312,12 @@
     "database.password": "postgres",
     "database.dbname" : "postgres",
     "topic.prefix": "tf",
-    $\textcolor{red}{\textbf{"table.include.list": "public.mnist\_.*",}}$
+    $\textcolor{magenta}{\textbf{"table.include.list": "public.mnist\_.*",}}$
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "value.converter": "org.apache.kafka.connect.storage.StringConverter",
-    "transforms": "unwrap, mnist",
+    $\textcolor{magenta}{\textbf{"transforms": "unwrap, mnist",}}$
     "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-    "transforms.mnist.type": "io.debezium.transforms.MnistToCsv"
+    $\textcolor{magenta}{\textbf{"transforms.mnist.type": "io.debezium.transforms.MnistToCsv"}}$
   }
 } 
      \end{lstlisting}
@@ -232,6 +355,7 @@ model.evaluate(test_ds)
 \end{frame}
 
 \begin{frame}
+    \frametitle{Flink and Spark}
     \begin{figure}
         \hspace*{-1.1cm}
         \includegraphics[height=6cm]{./img/debezium_flink.eps}
@@ -248,6 +372,24 @@ model.evaluate(test_ds)
     \end{itemize}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Feature stores}
+    \begin{itemize}
+        \item A centralized repository of features.
+        \item Consistency across training and inference.
+        \item Collaboration and reuseability.
+        \item Precomping features.
+        \item Monitoring for feature drift.
+        \item Versioning.
+        \item Integration with other MLOps tools, unified access to the features.
+    \end{itemize}
+
+     \begin{figure}
+        \centering
+        \includegraphics[height=4cm]{./img/featurestore.eps}
+        \caption{\tiny{Source: \url{https://www.hopsworks.ai/dictionary/feature-store}}}
+    \end{figure}
+\end{frame}
 
 \begin{frame}
     \begin{figure}
