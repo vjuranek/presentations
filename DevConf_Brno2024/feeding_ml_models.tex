@@ -214,40 +214,16 @@
         \includegraphics[height=4cm]{./img/qt_to_tf.eps}
     \end{figure}
     
-    \vspace*{0.5cm}
+    \vspace*{-0.5cm}
     
-    For more details see
-    \begin{itemize}
-        \color{blue}
-        \item \href{https://debezium.io/blog/2023/05/02/tensorflow-mnist-classification}{Image classification with Debezium and TensorFlow blog post}
-        \item \href{https://github.com/vjuranek/debezium-mnist-demo}{https://github.com/vjuranek/debezium-mnist-demo}
-        \color{black}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-    \frametitle{Reading data from Kafka in TensorFlow}
-    TensorFlow I/O provides \textcolor{blue}{\href{https://www.tensorflow.org/io/api_docs/python/tfio/experimental/streaming/KafkaGroupIODataset}{KafkaGroupIODataset}}:
+    Source code: \\
+    \color{blue}{\href{https://github.com/vjuranek/debezium-mnist-demo}{https://github.com/vjuranek/debezium-mnist-demo}}\color{black}
     
-    \vspace{0.5cm}
+    \vspace*{0.2cm}
     
-    \footnotesize
-    \begin{python}
-import tensorflow_io as tfio
-    
-# define Kafka data stream
-test_ds = tfio.experimental.streaming.KafkaGroupIODataset(
-    topics=[KAFKA_TEST_TOPIC],
-    group_id=KAFKA_CONSUMER_GROUP,
-    servers=KAFKA_SERVERS,
-    stream_timeout=KAFKA_STREAM_TIMEOUT,
-    configuration=[
-        "session.timeout.ms=10000",
-        "max.poll.interval.ms=10000",
-        "auto.offset.reset=earliest"
-    ],
-)
-    \end{python}
+    See also blog post:\\
+    \color{blue}{\href{https://debezium.io/blog/2023/05/02/tensorflow-mnist-classification}{Image classification with Debezium and TensorFlow blog post}}\\
+    \texttt{\small{https://debezium.io/blog/2023/05/02/tensorflow-mnist-classification}}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -297,61 +273,20 @@ public R apply(R r) {
      \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]
-    \frametitle{Debezium configuration}
-    \footnotesize
-    \begin{lstlisting}[language=json, mathescape=true]
-{
-  "name": "mnist-connector",
-  "config": {
-    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
-    "tasks.max": "1",
-    "database.hostname": "postgres",
-    "database.port": "5432",
-    "database.user": "postgres",
-    "database.password": "postgres",
-    "database.dbname" : "postgres",
-    "topic.prefix": "tf",
-    $\textcolor{magenta}{\textbf{"table.include.list": "public.mnist\_.*",}}$
-    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
-    $\textcolor{magenta}{\textbf{"transforms": "unwrap, mnist",}}$
-    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-    $\textcolor{magenta}{\textbf{"transforms.mnist.type": "io.debezium.transforms.MnistToCsv"}}$
-  }
-} 
-     \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-    \frametitle{Reading data in TensorFlow}
-    \vspace{-0.2cm}
-    \footnotesize
-    \begin{python}
-# define function for decoding Kafka records
-def decode_kafka_stream_record(message, key):
-    img_int = tf.io.decode_csv(message, [[0.0] for i in range(NUM_COLUMNS)])
-    img_norm = tf.cast(img_int, tf.float32) / 255.
-    label_int = tf.strings.to_number(key, out_type=tf.dtypes.int32)
-    return (img_norm, label_int)
-# define Kafka data stream
-test_ds = tfio.experimental.streaming.KafkaGroupIODataset(
-    topics=[KAFKA_TEST_TOPIC],
-    group_id=KAFKA_CONSUMER_GROUP,
-    servers=KAFKA_SERVERS,
-    stream_timeout=KAFKA_STREAM_TIMEOUT,
-    configuration=[
-        "session.timeout.ms=10000",
-        "max.poll.interval.ms=10000",
-        "auto.offset.reset=earliest"
-    ],
-)
-# read batches of Kafka records
-test_ds = test_ds.map(decode_kafka_stream_record)
-test_ds = test_ds.batch(BATCH_SIZE)
-# make predictions on the data samples
-model.evaluate(test_ds)
-    \end{python}
+\begin{frame}
+    \vspace*{1cm}
+    \centering
+    \textbf{\huge{Works seamlessly with Python Kafka client}}
+    
+    \vspace*{-0.7cm}
+    
+    \begin{figure}
+        \includegraphics[height=7cm]{./img/qt_to_node.eps}
+    \end{figure}
+    
+    \vspace*{-2cm}
+    
+    No SMT needed.
 \end{frame}
 
 \begin{frame}
@@ -377,8 +312,8 @@ model.evaluate(test_ds)
     \begin{itemize}
         \item A centralized repository of features.
         \item Consistency across training and inference.
-        \item Collaboration and reuseability.
-        \item Precomping features.
+        \item Collaboration and reusability.
+        \item Precomputing features.
         \item Monitoring for feature drift.
         \item Versioning.
         \item Integration with other MLOps tools, unified access to the features.
@@ -424,9 +359,120 @@ model.evaluate(test_ds)
 %%% BACKUP
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \begin{frame}
-%     \centering
-%     \huge{\textbf{Backup slides}}
-% \end{frame}
+
+\begin{frame}
+    \centering
+    \huge{\textbf{Backup slides}}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Debezium configuration}
+    \footnotesize
+    \begin{lstlisting}[language=json, mathescape=true]
+{
+  "name": "mnist-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "postgres",
+    "database.dbname" : "postgres",
+    "topic.prefix": "tf",
+    $\textcolor{magenta}{\textbf{"table.include.list": "public.mnist\_.*",}}$
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    $\textcolor{magenta}{\textbf{"transforms": "unwrap, mnist",}}$
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    $\textcolor{magenta}{\textbf{"transforms.mnist.type": "io.debezium.transforms.MnistToCsv"}}$
+  }
+} 
+     \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Reading data from Kafka in TensorFlow}
+    TensorFlow I/O provides \textcolor{blue}{\href{https://www.tensorflow.org/io/api_docs/python/tfio/experimental/streaming/KafkaGroupIODataset}{KafkaGroupIODataset}}:
+    
+    \vspace{0.5cm}
+    
+    \footnotesize
+    \begin{python}
+import tensorflow_io as tfio
+    
+# define Kafka data stream
+test_ds = tfio.experimental.streaming.KafkaGroupIODataset(
+    topics=[KAFKA_TEST_TOPIC],
+    group_id=KAFKA_CONSUMER_GROUP,
+    servers=KAFKA_SERVERS,
+    stream_timeout=KAFKA_STREAM_TIMEOUT,
+    configuration=[
+        "session.timeout.ms=10000",
+        "max.poll.interval.ms=10000",
+        "auto.offset.reset=earliest"
+    ],
+)
+    \end{python}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Reading data from Kafka in TensorFlow}
+    \vspace{-0.2cm}
+    \footnotesize
+    \begin{python}
+# define function for decoding Kafka records
+def decode_kafka_stream_record(message, key):
+    img_int = tf.io.decode_csv(message, [[0.0] for i in range(NUM_COLUMNS)])
+    img_norm = tf.cast(img_int, tf.float32) / 255.
+    label_int = tf.strings.to_number(key, out_type=tf.dtypes.int32)
+    return (img_norm, label_int)
+# define Kafka data stream
+test_ds = tfio.experimental.streaming.KafkaGroupIODataset(
+    topics=[KAFKA_TEST_TOPIC],
+    group_id=KAFKA_CONSUMER_GROUP,
+    servers=KAFKA_SERVERS,
+    stream_timeout=KAFKA_STREAM_TIMEOUT,
+    configuration=[
+        "session.timeout.ms=10000",
+        "max.poll.interval.ms=10000",
+        "auto.offset.reset=earliest"
+    ],
+)
+# read batches of Kafka records
+test_ds = test_ds.map(decode_kafka_stream_record)
+test_ds = test_ds.batch(BATCH_SIZE)
+# make predictions on the data samples
+model.evaluate(test_ds)
+    \end{python}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Reading data from Kafka using Python consumer}
+    \vspace{-0.2cm}
+    \footnotesize
+    \begin{python}
+def classify_stream(model):
+    # create Kafka consumer
+    consumer = kafka.KafkaConsumer(
+        "tf.public.mnist_test",
+        bootstrap_servers=["localhost:9092"],
+        auto_offset_reset="earliest",
+        consumer_timeout_ms=100000,
+        enable_auto_commit=True,
+        group_id="mnist_classifier"
+    )
+    
+    for msg in consumer:
+        # extract image from Debezium CDC message
+        val_json = json.loads(msg.value)
+        pixels = val_json['payload']['after']['pixels']
+        pixels_decoded = base64.b64decode(pixels)
+        
+        # pass the image to the model for classification
+        image  = [int(n) for n in pixels_decoded]
+        number = plot_and_predict(model, image)
+    \end{python}
+\end{frame}
 
 \end{document}
