@@ -19,7 +19,7 @@
         <version.jdk>1.8</version.jdk>
         <version.maven.compiler>3.3</version.maven.compiler>
         <version.maven.exec>1.4.0</version.maven.exec>
-        <version.infinispan>8.0.0.Final</version.infinispan>
+        <version.infinispan>14.0.25.Final</version.infinispan>
         <version.spark.core>1.4.0</version.spark.core>
         <version.spark.ispn>0.1</version.spark.ispn>
     </properties>
