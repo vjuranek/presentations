@@ -262,6 +262,18 @@ SELECT * FROM vect_test WHERE embedding <=>  '[5,5,5]' = 0;
 \end{frame}
 
 \begin{frame}
+     \frametitle{RAG with Debezium}
+     \begin{itemize}
+        \item Debezium provides AI module which allows to create embeddings as a single message transform (SMT).
+        \item Integrated with major LLM provides.
+        \item Currently Debezium server provides direct integration with Milvus, Qdrant and InstructLab.
+        \item For Kafka Connect we provide JDBC sink connector, also dedicated Kafka Connect sink connectors for Milvus and others exists.
+        \item No need to do any changes to the legacy applications or adjusting data flows.
+        \item Modernization of the app stack can happen in parallel to existing applications without any distraction.
+     \end{itemize}
+\end{frame}
+
+\begin{frame}
     \frametitle{RAG Demo: PostgreSQL, Debezium, Milvus}
     See
     \begin{itemize}
