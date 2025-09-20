@@ -71,6 +71,7 @@
 \begin{frame}
     \frametitle{Vector embedding}
     \begin{itemize}
+        \item Similar embeddings correspond to objects which are also \textbf{semantically} similar.
         \item Vector embeddings have other interesting properties, e.g. well know 
         \begin{equation}
             % \boxed{king - man + woman \approx queen}
@@ -97,7 +98,7 @@
     \begin{itemize}
         \item L2 (Euclidian) $$d(x,y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}$$
         \item L1 (Manhattan) $$d(x,y) = \sum_{i=1}^{n} |x_i - y_i|$$
-        \item scalar/inner product $$x \cdot y = \sum_{i=1}^{n} x_i \cdot y_i$$
+        \item scalar/inner product (vector need to be normalized) $$x \cdot y = \sum_{i=1}^{n} x_i \cdot y_i$$
         \item cosine similarity $$\cos{\Theta} = \frac{x \cdot y}{|x||y|}$$
         \item Jaccard index (similarity of two sample sets) $$J(A, B) = \frac{|A \cap B|}{|A| + |B| - |A \cap B|}$$
     \end{itemize}
