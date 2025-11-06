@@ -196,7 +196,7 @@ CREATE TABLE vect_test (id serial PRIMARY KEY, embedding vector(3));
 INSERT INTO vect_test(embedding) VALUES ('[1,1,1]'), ('[2,2,2]'), 
 ('[3,3,3]'), ('[4,4,4]'), ('[5,5,5]'), ('[5,5,6]'), ('[5,6,5]');
 SELECT * FROM vect_test ORDER BY embedding <-> '[5,5,5]' limit 3;
-SELECT * FROM vect_test WHERE embedding <->  '[5,5,5]' < 2
+SELECT * FROM vect_test WHERE embedding <->  '[5,5,5]' < 2;
 SELECT * FROM vect_test WHERE embedding <+>  '[5,5,5]' < 2;
 SELECT * FROM vect_test WHERE embedding <=>  '[5,5,5]' = 0;
         \end{lstlisting}
