@@ -52,7 +52,7 @@
 \title{Parsing of SQL Server TX logs}
 \author{Vojtěch Juránek}
 \institute[Red Hat]{Red Hat}
-\date{November 18th 2025, Debezium F2F meeting, Prague}
+\date{November 20th 2025, Debezium F2F meeting, Prague}
 
 \newenvironment{mylisting}
 {\begin{list}{}{\setlength{\leftmargin}{1em}}\item\scriptsize\bfseries}
@@ -101,38 +101,38 @@
 \begin{frame}
     \frametitle{\texttt{fn\_dblog()}}
     \begin{itemize}
-        \item reads only active portion of TX log
-        \item updates to blobs are not provided
-        \item update stores only diff, not whole before/after value; before/after value has to be reconstructed from original insert
-        \item on older servers (prior Server 2012 SP2+ and SQL Server 2014) results into leaking threads
+        \item Reads only active portion of TX log.
+        \item Updates to blobs are not provided.
+        \item Update stores only diff, not whole before/after value; before/after value has to be reconstructed from original insert.
+        \item On older servers (prior Server 2012 SP2+ and SQL Server 2014) results into leaking threads.
     \end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{\texttt{fn\_dump\_dblog()}}
     \begin{itemize}
-        \item should be able to read anything (all parts of TX log)
-        \item even more complicated then \texttt{fn\_dblog()}
-        \item haven’t found any reasonable description anywhere
+        \item Should be able to read anything (all parts of TX log).
+        \item Even more complicated then \texttt{fn\_dblog()}.
+        \item Haven’t found any reasonable description anywhere.
     \end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{\texttt{DBCC PAGE()}}
     \begin{itemize}
-        \item provides dump of a log page with some metadata
-        \item something in between \texttt{fn\_dblog()} and direct parsing of the logs directly
-        \item can be good for debugging, but doesn’t seem to be useful for programmatic approach as it doesn’t provide any added value compared to \texttt{fn\_dblog()} or reading the pages directly
+        \item Provides dump of a log page with some metadata.
+        \item Something in between \texttt{fn\_dblog()} and direct parsing of the logs directly.
+        \item Can be good for debugging, but doesn’t seem to be useful for programmatic approach as it doesn’t provide any added value compared to \texttt{fn\_dblog()} or reading the pages directly.
     \end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{Parsing log files directly}
     \begin{itemize}
-        \item seems to be doable
-        \item change themselves are encoded in the same way as output of \texttt{fn\_dblog()}
-        \item additional overhead (in terms of what needs to be implemented) with parsing additional information provided directly by \texttt{fn\_dblog()}, e.g. type of operations etc.
-        \item the main unclear part is again how to handle updates
+        \item Seems to be doable.
+        \item Change themselves are encoded in the same way as output of \texttt{fn\_dblog()}.
+        \item Additional overhead (in terms of what needs to be implemented) with parsing additional information provided directly by \texttt{fn\_dblog()}, e.g. type of operations etc.
+        \item The main unclear part is again how to handle updates.
     \end{itemize}
 \end{frame}
 
@@ -140,20 +140,44 @@
 \begin{frame}
     \frametitle{Existing libraries and tools}
     \begin{itemize}
-        \item 
-        \item 
-        \item 
+        \item \color{blue}\url{https://github.com/ap0405140/MSSQLLogAnalyzer}\color{black}
+        \begin{itemize}
+            \item written in C\# with GUI
+            \item based in usage of \texttt{fn\_dblog()}
+        \end{itemize}
+        \item \color{blue}\url{https://github.com/dbforensic/sql-transaction-log-parser}\color{black}
+        \begin{itemize}
+            \item written in Python, quite simple program
+            \item direct parsing of SQL Server log files
+        \end{itemize}
+        \item Commercial closed sources solutions exist, e.g.
+        \begin{itemize}
+            \item \color{blue}\url{https://www.apexsql.com/sql-tools-log/}\color{black}
+            \item \color{blue}\url{https://www.devart.com/dbforge/sql/transaction-log/}\color{black}
+        \end{itemize}
     \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-    \frametitle{}
+    \frametitle{Summary}
     \begin{itemize}
-        \item 
-        \item 
-        \item 
+        \item Existing tools provides very limited capabilities.
+        \item Implementation of parser would be probably doable.
+        \item However, given that the format is not publicly know, it would be very time consuming.
     \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Questions?}
+    \centering
+     \textbf{\Huge{Thank you!}}
+    
+    \vspace{1.5cm}
+    
+    \textbf{\Huge{Questions?}}
+    
+    \vspace{1cm}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
